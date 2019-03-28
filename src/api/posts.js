@@ -28,3 +28,35 @@ export async function get_posts(types, {api_server = DEFAULT_SERVER,
   })
   return response.data
 }
+
+export async function create_post (address, post_type, content,
+                                   {api_server = DEFAULT_SERVER,
+                                    ref = null, misc_content = null} = {}) {
+  let post_content = {
+    'type': post_type,
+    'address': address,
+    'content': {
+      'body': content
+    },
+    'time': Date.now() / 1000
+  }
+
+  if (ref !== null) {
+    post_content.ref = ref
+  }
+  if (misc_content !== null) {
+    Object.assign(post_content.content, misc_content);
+  }
+
+  let hash = await ipfs_push(post_content, {'api_server':api_server})
+
+  let message = {
+    'item_hash': hash,
+    'chain': 'NULS',
+    'channel': 'blogs',
+    'sender': address,
+    'type': 'POST',
+    'time': Date.now() / 1000
+  }
+  return message
+}
