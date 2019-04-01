@@ -3,6 +3,13 @@ const RIPEMD160 = require('ripemd160')
 const bs58 = require('bs58')
 const shajs = require('sha.js')
 
+var hexRegEx = /([0-9]|[a-f])/gim
+
+function isHex (input) {
+  return typeof input === 'string' &&
+    (input.match(hexRegEx) || []).length === input.length
+}
+
 function getxor (body) {
   // my current/simple method
   // assume 'buf1', 'buf2' & 'result' are ArrayBuffers
@@ -75,7 +82,7 @@ function get_verification_buffer(message) {
   return Buffer.from(`${message.chain}\n${message.sender}\n${message.type}\n${message.item_hash}`)
 }
 
-function nuls_magic_hash(message, messagePrefix) {
+function magic_hash(message, messagePrefix) {
   messagePrefix = messagePrefix || '\u0018NULS Signed Message:\n'
   if (!Buffer.isBuffer(messagePrefix)) messagePrefix = Buffer.from(messagePrefix)
 
@@ -89,8 +96,8 @@ function nuls_magic_hash(message, messagePrefix) {
   return new shajs.sha256().update(buffer).digest()
 }
 
-export function nuls_sign(prv_key, message) {
-  let digest = nuls_magic_hash(get_verification_buffer(message))
+export function sign(prv_key, message) {
+  let digest = magic_hash(get_verification_buffer(message))
 
   let pub_key = secp256k1.publicKeyCreate(prv_key)
 
@@ -106,7 +113,7 @@ export function nuls_sign(prv_key, message) {
   return message
 }
 
-export function check_nuls_pkey(private_key) {
+export function check_pkey(private_key) {
   if (!isHex(private_key)) { return false }
   if (!private_key) { return false }
   if ((private_key.length === 66) && (private_key.substring(0, 2) === '00')) {
