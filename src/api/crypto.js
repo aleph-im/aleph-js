@@ -105,3 +105,19 @@ export function nuls_sign(prv_key, message) {
   message.signature = buf.toString('hex')
   return message
 }
+
+export function check_nuls_pkey(private_key) {
+  if (!isHex(private_key)) { return false }
+  if (!private_key) { return false }
+  if ((private_key.length === 66) && (private_key.substring(0, 2) === '00')) {
+    private_key = private_key.substring(2, 66)
+  }
+  if (private_key.length !== 64) { return false }
+  try {
+    let prvbuffer = Buffer.from(private_key, 'hex')
+    let pub = private_key_to_public_key(prvbuffer)
+  } catch (e) {
+    return false
+  }
+  return private_key
+}
