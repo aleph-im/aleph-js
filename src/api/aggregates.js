@@ -15,7 +15,9 @@ export async function fetch_profile(address, {api_server = DEFAULT_SERVER} = {})
   return await fetch(address, 'profile', {'api_server': api_server})
 }
 
-export async function submit( address, key, content, {chain='NULS' , api_server = DEFAULT_SERVER} = {}) {
+export async function submit(address, key, content,
+                             {chain='NULS', channel=null,
+                              api_server = DEFAULT_SERVER} = {}) {
   let post_content = {
     'address': address,
     'key': key,
@@ -27,7 +29,7 @@ export async function submit( address, key, content, {chain='NULS' , api_server 
   let message = {
     'item_hash': hash,
     'chain': chain,
-    'channel': 'blogs',
+    'channel': channel,
     'sender': address,
     'type': 'AGGREGATE',
     'time': Date.now() / 1000
