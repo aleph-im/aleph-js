@@ -15,7 +15,9 @@ export default [
       format: 'umd'
     },
 		plugins: [
-			resolve(),
+			resolve({
+				browser: true
+			}),
       // replace(),
 	    commonjs(),
 			json()
