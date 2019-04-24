@@ -32,6 +32,7 @@ export async function get_posts(types, {api_server = DEFAULT_SERVER,
 export async function create_post (address, post_type, content,
                                    {api_server = DEFAULT_SERVER,
                                     ref = null, misc_content = null,
+                                    chain = "NULS",
                                     channel = null} = {}) {
   let post_content = {
     'type': post_type,
@@ -53,7 +54,7 @@ export async function create_post (address, post_type, content,
 
   let message = {
     'item_hash': hash,
-    'chain': 'NULS',
+    'chain': chain,
     'channel': channel,
     'sender': address,
     'type': 'POST',
