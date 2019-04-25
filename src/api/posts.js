@@ -1,4 +1,5 @@
 import axios from 'axios'
+import {ipfs_push} from './create'
 import {DEFAULT_SERVER} from './base'
 
 export async function get_posts(types, {api_server = DEFAULT_SERVER,
