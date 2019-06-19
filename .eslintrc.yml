@@ -5,7 +5,6 @@ env:
   commonjs: true
   es6: true
   node: true
-extends: google
 parserOptions:
   ecmaFeatures:
     experimentalObjectRestSpread: true
