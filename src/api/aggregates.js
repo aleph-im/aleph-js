@@ -2,7 +2,7 @@ import axios from 'axios'
 import {ipfs_push} from './create'
 import {DEFAULT_SERVER} from './base'
 
-export async function fetch(address, key, {api_server = DEFAULT_SERVER} = {}) {
+export async function fetch_one(address, key, {api_server = DEFAULT_SERVER} = {}) {
   let response = await axios.get(`${api_server}/api/v0/aggregates/${address}.json?keys=${key}`)
   if ((response.data.data !== undefined) && (response.data.data[key] !== undefined))
   {
@@ -11,8 +11,19 @@ export async function fetch(address, key, {api_server = DEFAULT_SERVER} = {}) {
     return null
 }
 
+export async function fetch(address, {keys = null, api_server = DEFAULT_SERVER} = {}) {
+  let response = await axios.get(
+    `${api_server}/api/v0/aggregates/${address}.json`,
+    {keys: keys})
+  if ((response.data.data !== undefined))
+  {
+    return response.data.data
+  } else
+    return null
+}
+
 export async function fetch_profile(address, {api_server = DEFAULT_SERVER} = {}) {
-  return await fetch(address, 'profile', {'api_server': api_server})
+  return await fetch_one(address, ['profile'], {'api_server': api_server})
 }
 
 export async function submit(address, key, content,
