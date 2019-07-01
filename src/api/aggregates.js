@@ -12,6 +12,10 @@ export async function fetch_one(address, key, {api_server = DEFAULT_SERVER} = {}
 }
 
 export async function fetch(address, {keys = null, api_server = DEFAULT_SERVER} = {}) {
+
+  if (keys !== null)
+    keys = keys.join(',')
+
   let response = await axios.get(
     `${api_server}/api/v0/aggregates/${address}.json`,
     {
