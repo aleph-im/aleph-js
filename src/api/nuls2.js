@@ -2,6 +2,8 @@ const secp256k1 = require('secp256k1')
 const RIPEMD160 = require('ripemd160')
 const bs58 = require('bs58')
 const shajs = require('sha.js')
+import * as bip39 from 'bip39'
+import * as bip32 from 'bip32'
 
 var hexRegEx = /([0-9]|[a-f])/gim
 
@@ -105,12 +107,14 @@ function encodeSignature (signature, recovery, compressed) {
 export function sign(prv_key, message) {
   let digest = magic_hash(get_verification_buffer(message))
 
+  if (typeof prv_key === 'string' || prv_key instanceof String)
+    prv_key = Buffer.from(prv_key, 'hex')
 
   const sigObj = secp256k1.sign(digest, prv_key)
   let signature = encodeSignature(
     sigObj.signature,
     sigObj.recovery,
-    true
+    false
   )
   message.signature = signature.toString('base64')
   return message
@@ -142,4 +146,50 @@ export function check_pkey(private_key) {
     return false
   }
   return private_key
+}
+
+export async function new_account({chain_id = 1, prefix='NULS'} = {}) {
+  let mnemonics =  bip39.generateMnemonic()
+  return create_account({
+    'mnemonics': mnemonics,
+    'chain_id': chain_id,
+    'prefix': prefix
+  })
+}
+
+export async function import_account({
+      private_key = null,
+      mnemonics = null,
+      chain_id = 1,
+      prefix = 'NULS',
+      name = null
+    } = {}){
+  if (mnemonics) {
+    let v = await bip39.mnemonicToSeed(mnemonics)
+    let b = bip32.fromSeed(v)
+    private_key = b.privateKey.toString('hex')
+  }
+  if (private_key !== null) {
+    let account = {
+      'private_key': private_key,
+      'mnemonics': mnemonics,
+      'type': 'NULS2'
+    }
+    let prvbuffer = Buffer.from(private_key, 'hex')
+    let pub = private_key_to_public_key(prvbuffer)
+    account['public_key'] = pub.toString('hex')
+    let hash = public_key_to_hash(pub, {
+      'chain_id': chain_id
+    })
+    account['address'] = address_from_hash(hash, {
+      'prefix': prefix
+    })
+    if (name)
+      account['name'] = name
+    else
+      account['name'] = account['address']
+
+    return account
+  }
+  return null
 }
