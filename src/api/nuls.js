@@ -97,6 +97,9 @@ function magic_hash(message, messagePrefix) {
 }
 
 export function sign(prv_key, message) {
+  if (typeof prv_key === 'string' || prv_key instanceof String)
+    prv_key = Buffer.from(prv_key, 'hex')
+
   let digest = magic_hash(get_verification_buffer(message))
 
   let pub_key = secp256k1.publicKeyCreate(prv_key)
