@@ -59,7 +59,7 @@ export async function submit(address, key, content,
     message['item_content'] = serialized
     message['item_hash'] = new shajs.sha256().update(serialized).digest('hex')
   } else {
-    let hash = await ipfs_push(post_content, {api_server: api_server})
+    let hash = await ipfs_push(aggregate_content, {api_server: api_server})
     message['item_hash'] = hash
   }
 
