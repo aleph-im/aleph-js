@@ -1,6 +1,9 @@
 import axios from 'axios'
 import {ipfs_push} from './create'
 import {DEFAULT_SERVER} from './base'
+import * as nuls2 from './nuls2'
+import {broadcast} from './create'
+const shajs = require('sha.js')
 
 export async function get_posts(types, {api_server = DEFAULT_SERVER,
                                         pagination = 200, page=1,
@@ -30,36 +33,44 @@ export async function get_posts(types, {api_server = DEFAULT_SERVER,
   return response.data
 }
 
-export async function create_post (address, post_type, content,
-                                   {api_server = DEFAULT_SERVER,
-                                    ref = null, misc_content = null,
-                                    chain = "NULS",
-                                    channel = null} = {}) {
+export async function submit(address, post_type, content,
+                             {api_server = DEFAULT_SERVER,
+                              chain = null, channel = null,
+                              inline = true, account = null} = {}) {
   let post_content = {
     'type': post_type,
     'address': address,
-    'content': {
-      'body': content
-    },
+    'content': content,
     'time': Date.now() / 1000
   }
 
-  if (ref !== null) {
-    post_content.ref = ref
-  }
-  if (misc_content !== null) {
-    Object.assign(post_content.content, misc_content);
-  }
-
-  let hash = await ipfs_push(post_content, {'api_server':api_server})
-
   let message = {
-    'item_hash': hash,
     'chain': chain,
     'channel': channel,
     'sender': address,
     'type': 'POST',
     'time': Date.now() / 1000
+  }
+
+  if (inline) {
+    let serialized = JSON.stringify(post_content)
+
+    message['item_content'] = serialized
+    message['item_hash'] = new shajs.sha256().update(serialized).digest('hex')
+  } else {
+    let hash = await ipfs_push(post_content, {api_server: api_server})
+    message['item_hash'] = hash
+  }
+
+  if(account) {
+    if (!message['chain']) {
+      message['chain'] = account['type']
+    }
+    if (account.type === 'NULS2') {
+      nuls2.sign(account.private_key, message)
+    } else
+      return message // can't sign, so can't broadcast
+    await broadcast(message, {'api_server': api_server})
   }
   return message
 }
