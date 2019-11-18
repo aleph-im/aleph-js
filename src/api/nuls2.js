@@ -94,7 +94,6 @@ function magic_hash(message, messagePrefix) {
   cursor += write_varint(message.length, buffer, cursor)
   cursor += Buffer.from(message).copy(buffer, cursor)
   buffer = buffer.slice(0, cursor)
-  console.log(buffer.toString('utf8'))
   return new shajs.sha256().update(buffer).digest()
 }
 
