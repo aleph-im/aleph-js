@@ -35,7 +35,7 @@ export async function get_posts(types, {api_server = DEFAULT_SERVER,
 
 export async function submit(address, post_type, content,
                              {api_server = DEFAULT_SERVER,
-                              chain = null, channel = null,
+                              ref = null, chain = null, channel = null,
                               inline = true, account = null} = {}) {
   let post_content = {
     'type': post_type,
@@ -43,6 +43,9 @@ export async function submit(address, post_type, content,
     'content': content,
     'time': Date.now() / 1000
   }
+
+  if (ref !== null)
+    post_content['ref'] = ref
 
   let message = {
     'chain': chain,
