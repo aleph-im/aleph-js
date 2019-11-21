@@ -2,13 +2,13 @@ import axios from 'axios'
 import {ipfs_push} from './create'
 import {DEFAULT_SERVER} from './base'
 import * as nuls2 from './nuls2'
-import {broadcast} from './create'
+import {broadcast, put_content} from './create'
 const shajs = require('sha.js')
 
-export async function get_posts(types, {api_server = DEFAULT_SERVER,
-                                        pagination = 200, page=1,
-                                        refs = null, addresses = null,
-                                        tags = null, hashes = null} = {}) {
+export async function get_posts(
+  types, {
+    api_server = DEFAULT_SERVER, pagination = 200, page=1,
+    refs = null, addresses = null, tags = null, hashes = null} = {}) {
   let params = {
     'types': types,
     'pagination': pagination,
@@ -33,10 +33,10 @@ export async function get_posts(types, {api_server = DEFAULT_SERVER,
   return response.data
 }
 
-export async function submit(address, post_type, content,
-                             {api_server = DEFAULT_SERVER,
-                              ref = null, chain = null, channel = null,
-                              inline = true, account = null} = {}) {
+export async function submit(
+  address, post_type, content, {
+    api_server = DEFAULT_SERVER, ref = null, chain = null, channel = null,
+    inline = true, storage_engine='storage', account = null} = {}) {
   let post_content = {
     'type': post_type,
     'address': address,
@@ -54,16 +54,7 @@ export async function submit(address, post_type, content,
     'type': 'POST',
     'time': Date.now() / 1000
   }
-
-  if (inline) {
-    let serialized = JSON.stringify(post_content)
-
-    message['item_content'] = serialized
-    message['item_hash'] = new shajs.sha256().update(serialized).digest('hex')
-  } else {
-    let hash = await ipfs_push(post_content, {api_server: api_server})
-    message['item_hash'] = hash
-  }
+  await put_content(message, post_content, inline, storage_engine, api_server)
 
   if(account) {
     if (!message['chain']) {

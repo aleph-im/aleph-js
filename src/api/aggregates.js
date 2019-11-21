@@ -2,7 +2,7 @@ import axios from 'axios'
 import {ipfs_push} from './create'
 import {DEFAULT_SERVER} from './base'
 import * as nuls2 from './nuls2'
-import {broadcast} from './create'
+import {broadcast, put_content} from './create'
 const shajs = require('sha.js')
 
 export async function fetch_one(address, key, {api_server = DEFAULT_SERVER} = {}) {
@@ -35,10 +35,10 @@ export async function fetch_profile(address, {api_server = DEFAULT_SERVER} = {})
   return await fetch_one(address, ['profile'], {'api_server': api_server})
 }
 
-export async function submit(address, key, content,
-                             {chain=null, channel=null,
-                              api_server = DEFAULT_SERVER,
-                              inline = true, account = null} = {}) {
+export async function submit(
+  address, key, content, {
+    chain=null, channel=null, api_server = DEFAULT_SERVER,
+    inline = true, storage_engine='storage', account = null} = {}) {
                               
   let aggregate_content = {
     'address': address,
@@ -53,15 +53,7 @@ export async function submit(address, key, content,
     'type': 'AGGREGATE',
     'time': Date.now() / 1000
   }
-  if (inline) {
-    let serialized = JSON.stringify(aggregate_content)
-
-    message['item_content'] = serialized
-    message['item_hash'] = new shajs.sha256().update(serialized).digest('hex')
-  } else {
-    let hash = await ipfs_push(aggregate_content, {api_server: api_server})
-    message['item_hash'] = hash
-  }
+  await put_content(message, aggregate_content, inline, storage_engine, api_server)
 
   if(account) {
     if (!message['chain']) {
