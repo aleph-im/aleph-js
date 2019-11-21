@@ -11,6 +11,7 @@ export async function put_content(
     if (serialized.length > 150000) {
       inline = false
     } else {
+      message['item_type'] = 'inline'
       message['item_content'] = serialized
       message['item_hash'] = new shajs.sha256().update(serialized).digest('hex')
     }
@@ -18,8 +19,10 @@ export async function put_content(
   if (!inline) {
     let hash = ''
     if (storage_engine === 'ipfs') {
+      message['item_type'] = 'ipfs'
       hash = await ipfs_push(content, {api_server: api_server})
     } else {
+      message['item_type'] = 'storage'
       hash = await storage_push(content, {api_server: api_server})
     }
     message['item_hash'] = hash
@@ -28,7 +31,11 @@ export async function put_content(
 
 export async function ipfs_push (
   value, {api_server = DEFAULT_SERVER} = {}) {
-  let response = await axios.post(`${api_server}/api/v0/ipfs/add_json`, value)
+  let response = await axios.post(`${api_server}/api/v0/ipfs/add_json`, value, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
   if (response.data.hash !== undefined) {
     return response.data.hash
   } else {
@@ -38,7 +45,12 @@ export async function ipfs_push (
 
 export async function storage_push (
   value, {api_server = DEFAULT_SERVER} = {}) {
-  let response = await axios.post(`${api_server}/api/v0/storage/add_json`, value)
+  let response = await axios.post(`${api_server}/api/v0/storage/add_json`,
+    value, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
   if (response.data.hash !== undefined) {
     return response.data.hash
   } else {
