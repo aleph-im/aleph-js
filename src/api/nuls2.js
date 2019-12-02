@@ -157,12 +157,9 @@ export async function new_account({chain_id = 1, prefix='NULS'} = {}) {
 }
 
 export async function import_account({
-      private_key = null,
-      mnemonics = null,
-      chain_id = 1,
-      prefix = 'NULS',
-      name = null
-    } = {}){
+  private_key = null, mnemonics = null, chain_id = 1, prefix = 'NULS',
+  name = null} = {}){
+    
   if (mnemonics) {
     let v = await bip39.mnemonicToSeed(mnemonics)
     let b = bip32.fromSeed(v)
