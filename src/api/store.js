@@ -2,6 +2,7 @@ import {
   ipfs_push_file, storage_push_file,
   broadcast, put_content} from './create'
 import * as nuls2 from './nuls2'
+import axios from 'axios'
 
 export async function submit(
   address, {
@@ -62,4 +63,16 @@ export async function submit(
   message['content'] = store_content
 
   return message
+}
+
+export async function retrieve(file_hash, {api_server = DEFAULT_SERVER} = {}) {
+  let response = await axios.get(`${api_server}/api/v0/storage/raw/${file_hash}?find`,
+  {
+    responseType: 'arraybuffer'
+  })
+  if (response.status === 200) {
+    return response.data
+  } else {
+    return null
+  }
 }
