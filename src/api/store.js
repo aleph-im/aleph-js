@@ -66,13 +66,17 @@ export async function submit(
 }
 
 export async function retrieve(file_hash, {api_server = DEFAULT_SERVER} = {}) {
-  let response = await axios.get(`${api_server}/api/v0/storage/raw/${file_hash}?find`,
-  {
-    responseType: 'arraybuffer'
-  })
-  if (response.status === 200) {
-    return response.data
-  } else {
+  try {
+    let response = await axios.get(`${api_server}/api/v0/storage/raw/${file_hash}?find`,
+    {
+      responseType: 'arraybuffer'
+    })
+    if (response.status === 200) {
+      return response.data
+    } else {
+      return null
+    }
+  } catch (err) {
     return null
   }
 }
