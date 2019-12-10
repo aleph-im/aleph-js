@@ -3,6 +3,7 @@ import {
   broadcast, put_content} from './create'
 import * as nuls2 from './nuls2'
 import axios from 'axios'
+import {DEFAULT_SERVER} from './base'
 
 export async function submit(
   address, {
