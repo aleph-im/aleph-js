@@ -149,7 +149,7 @@ export function check_pkey(private_key) {
 
 export async function new_account({chain_id = 1, prefix='NULS'} = {}) {
   let mnemonics =  bip39.generateMnemonic()
-  return create_account({
+  return import_account({
     'mnemonics': mnemonics,
     'chain_id': chain_id,
     'prefix': prefix
