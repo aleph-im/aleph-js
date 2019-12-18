@@ -69,9 +69,9 @@ export async function submit(
 export async function retrieve(file_hash, {api_server = DEFAULT_SERVER} = {}) {
   try {
     let response = await axios.get(`${api_server}/api/v0/storage/raw/${file_hash}?find`,
-    {
-      responseType: 'arraybuffer'
-    })
+      {
+        responseType: 'arraybuffer'
+      })
     if (response.status === 200) {
       return response.data
     } else {
