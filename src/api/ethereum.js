@@ -57,8 +57,10 @@ export async function import_account({
 export async function from_provider(provider) {
   // You should likely pass web3.currentProvider
   const ethprovider = new ethers.providers.Web3Provider(provider)
+  console.log(ethprovider)
 
   // There is only ever up to one account in MetaMask exposed
   const signer = ethprovider.getSigner()
+  console.log(signer)
   return _from_wallet(signer)
 }
