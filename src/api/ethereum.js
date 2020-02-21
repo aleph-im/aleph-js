@@ -14,11 +14,8 @@ export async function w3_sign(w3, address, message) {
 }
 
 export async function sign(account, message) {
-  console.log(account, message)
   let buffer = get_verification_buffer(message)
-  console.log(buffer)
   let signer = account.signer
-  console.log(signer)
   if (!signer) {
     if (account.private_key) {
       signer = ethers.Wallet(account.private_key)
@@ -32,8 +29,7 @@ export async function sign(account, message) {
 }
 
 export async function new_account({path = "m/44'/60'/0'/0/0"} = {}) {
-  let mnemonics =  bip39.generateMnemonic()
-  console.log(ethers, mnemonics)
+  let mnemonics = bip39.generateMnemonic()
   return import_account({
     'mnemonics': mnemonics,
     'path': path
