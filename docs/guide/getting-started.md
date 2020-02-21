@@ -1,3 +1,7 @@
+---
+sidebarDepth: 2
+---
+
 # Getting Started
 
 ## Accounts
@@ -7,6 +11,8 @@ There are several account providers supported, among those:
 
 - NULS2
 - Ethereum (private key in browser, or web3)
+
+### NULS
 
 To create a new account (if you don't use an external provider), you need to call the `new_account` function of the needed chain. Arguments to this function vary per chain.
 
@@ -45,3 +51,50 @@ account = await nuls2.import_account({mnemonics: 'cool install source weather ma
 // From private key:
 account = nuls2.import_account({private_key: 'cc0681517ecbf8d2800f6fe237fb0af9bef8c95eaa04bfaf3a733cf144a9640c'})
 ```
+
+### Ethereum
+
+Same for Ethereum:
+
+``` javascript
+import { ethereum } from 'aleph-js'
+
+// to create a new account
+await ethereum.new_account()
+// to import an account from mnemonics
+await ethereum.import_account({mnemonics: '...'})
+// you can specify a derivation path for the mnemonics (also works on new_account, default is m/44'/60'/0'/0/0)
+await ethereum.import_account({mnemonics: '...', path: "m/44'/60'/0'/0/0"})
+// to import an account from private key
+await ethereum.import_account({private_key: '...'})
+```
+
+A specificity of ethereum is the ability to use 3rd party providers, here an example with metamask-like browser web3 providers:
+``` javascript
+let account = null
+if (window.ethereum) {
+    try {
+        // Request account access if needed
+        await window.ethereum.enable()
+        account = await ethereum.from_provider(window['ethereum'] || window.web3.currentProvider)
+    } catch (error) {
+        // User denied account access...
+    }
+}
+```
+
+
+Due to this specificity, three other keys are added to the account object in ethereum:
+- `signer`,
+- `source` (that can be either `integrated` for a local private key or `provider`),
+- and `provider`
+
+You would need to remove them (beside source) to be able to serialize the account (for storage for example).
+
+## Aggregates (key-value storage)
+
+## Posts (document-like storage)
+
+## Store (File/Blob storage)
+
+## Encryption
