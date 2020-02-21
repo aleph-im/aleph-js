@@ -11,9 +11,8 @@ parserOptions:
   ecmaVersion: 8
   sourceType: module
 rules:
-  indent:
-    - error
-    - 2
+  no-deprecated-api:
+    - off
   comma-dangle:
     - error
     - never
