@@ -103,7 +103,7 @@ function encodeSignature (signature, recovery, compressed) {
   return Buffer.concat([Buffer.alloc(1, recovery + 27), signature])
 }  
 
-export function sign(prv_key, message) {
+export async function sign(prv_key, message) {
   let digest = magic_hash(get_verification_buffer(message))
 
   if (typeof prv_key === 'string' || prv_key instanceof String)

@@ -13,6 +13,24 @@ export async function w3_sign(w3, address, message) {
   return message
 }
 
+export async function sign(account, message) {
+  console.log(account, message)
+  let buffer = get_verification_buffer(message)
+  console.log(buffer)
+  let signer = account.signer
+  console.log(signer)
+  if (!signer) {
+    if (account.private_key) {
+      signer = ethers.Wallet(account.private_key)
+    }
+  }
+  if (signer) {
+    let signed = await signer.signMessage(buffer.toString())
+    message.signature = signed
+    return message
+  }
+}
+
 export async function new_account({path = "m/44'/60'/0'/0/0"} = {}) {
   let mnemonics =  bip39.generateMnemonic()
   console.log(ethers, mnemonics)
@@ -29,7 +47,8 @@ async function _from_wallet(wallet) {
       'mnemonics': wallet.mnemonic,
       'address': wallet.address,
       'type': 'ETH',
-      'provider': 'integrated'
+      'source': 'integrated',
+      'signer': wallet
     }
     if (name)
       account['name'] = name
@@ -57,10 +76,18 @@ export async function import_account({
 export async function from_provider(provider) {
   // You should likely pass web3.currentProvider
   const ethprovider = new ethers.providers.Web3Provider(provider)
-  console.log(ethprovider)
 
   // There is only ever up to one account in MetaMask exposed
   const signer = ethprovider.getSigner()
-  console.log(signer)
-  return _from_wallet(signer)
+  const address = await signer.getAddress()
+  return {
+    'private_key': null,
+    'mnemonics': null,
+    'address': address,
+    'name': address,
+    'type': 'ETH',
+    'source': 'provider',
+    'provider': ethprovider,
+    'signer': signer
+  }
 }

@@ -1,7 +1,6 @@
 import {
   ipfs_push_file, storage_push_file,
-  broadcast, put_content} from './create'
-import * as nuls2 from './nuls2'
+  sign_and_broadcast, put_content} from './create'
 import axios from 'axios'
 import {DEFAULT_SERVER} from './base'
 
@@ -50,16 +49,7 @@ export async function submit(
   }
   await put_content(message, store_content, true, storage_engine, api_server)
 
-  if (account) {
-    if (!message['chain']) {
-      message['chain'] = account['type']
-    }
-    if (account.type === 'NULS2') {
-      nuls2.sign(account.private_key, message)
-    } else
-      return message // can't sign, so can't broadcast
-    await broadcast(message, { 'api_server': api_server })
-  }
+  await sign_and_broadcast(message, account)
 
   message['content'] = store_content
 

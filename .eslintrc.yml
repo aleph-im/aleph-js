@@ -14,5 +14,4 @@ rules:
   no-deprecated-api:
     - off
   comma-dangle:
-    - error
-    - never
+    - off

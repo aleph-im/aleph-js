@@ -1,5 +1,7 @@
 import axios from 'axios'
 import {DEFAULT_SERVER} from './base'
+import * as nuls2 from './nuls2'
+import * as ethereum from './ethereum'
 const shajs = require('sha.js')
 
 export async function put_content(
@@ -107,4 +109,19 @@ export async function broadcast (
     'data': JSON.stringify(message)
   })
   return response.data.value
+}
+
+export async function sign_and_broadcast(message, account, api_server) {
+  if (account) {
+    if (!message['chain']) {
+      message['chain'] = account['type']
+    }
+    if (account.type === 'NULS2') {
+      await nuls2.sign(account.private_key, message)
+    } else if (account.type === 'ETH') {
+      await ethereum.sign(account, message)
+    } else
+      return message // can't sign, so can't broadcast
+    await broadcast(message, { 'api_server': api_server })
+  }
 }

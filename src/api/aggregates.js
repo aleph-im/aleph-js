@@ -1,8 +1,7 @@
 import axios from 'axios'
 import {ipfs_push} from './create'
 import {DEFAULT_SERVER} from './base'
-import * as nuls2 from './nuls2'
-import {broadcast, put_content} from './create'
+import {sign_and_broadcast, put_content} from './create'
 const shajs = require('sha.js')
 
 export async function fetch_one(address, key, {api_server = DEFAULT_SERVER} = {}) {
@@ -55,16 +54,7 @@ export async function submit(
   }
   await put_content(message, aggregate_content, inline, storage_engine, api_server)
 
-  if(account) {
-    if (!message['chain']) {
-      message['chain'] = account['type']
-    }
-    if (account.type === 'NULS2') {
-      nuls2.sign(account.private_key, message)
-    } else
-      return message // can't sign, so can't broadcast
-    await broadcast(message, {'api_server': api_server})
-  }
+  await sign_and_broadcast(message, account, api_server)
 
   return message
 }
