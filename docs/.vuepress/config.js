@@ -1,6 +1,7 @@
 module.exports = {
   title: 'Aleph-JS',
   description: 'Aleph.im Javascript API',
+  base: '/aleph-js/',
   themeConfig: {
     logo: '/logo.svg',
     repo: 'aleph-im/aleph-js',
