@@ -208,7 +208,6 @@ For full reference here is the `posts.submit` function signature:
 ```javascript
 async function submit(
   address, post_type, content,
-  
   {
     api_server = DEFAULT_SERVER, // target API server
     ref = null, // ref field of the message, optionnal
@@ -277,7 +276,7 @@ async function get_posts(
   {
     api_server = DEFAULT_SERVER,
     pagination = 200, // Total per page
-    page=1, // requested page
+    page = 1, // requested page
     refs = null, // a list of references, optional
     addresses = null, // a list of addresses posting the items, optional
     tags = null, // a list of tags, optional
@@ -310,7 +309,146 @@ result.posts[0].content
 
 ## Store (File/Blob storage)
 
+To store a file, you need to create a STORE message, that you can reference later on from AGGREGATEs or POSTs (to add meta-data, allowing amends and things like that):
 
+### Storing files
+
+Let's try with a very simple text file (you can do bigger files yourself later!).
+
+```javascript
+import { store } from 'aleph-js'
+
+// Worth noting that this file object can also be obtained from an upload form input (if you don't want to build it programmatically).
+var myfile = new File(
+    ["This is just a test."],
+    "test.txt",
+    {type: "text/plain"})
+await store.submit(
+    account.address,
+    {'fileobject': myfile,
+     'account': account,
+     'channel': 'TEST',
+     'api_server': 'https://api2.aleph.im' // please select an API server accepting files, this one does!
+    })
+```
+
+Here is what the returned object looks like:
+```javascript
+{
+  "chain": "NULS2",
+  "channel": "TEST",
+  "sender": "NULSd6HgcLR5Yjc7yyMiteQZxTpuB6NYRiqWf",
+  "type": "STORE",
+  "time": 1582562109.316,
+  "item_type": "inline",
+  "item_content": "{\"address\":\"NULSd6HgcLR5Yjc7yyMiteQZxTpuB6NYRiqWf\",\"item_type\":\"storage\",\"item_hash\":\"11dfc1e6953dac4bd02d8faa06878f51eea3421fa58d7148e808d425cff2a921\",\"time\":1582562109.316}",
+  "item_hash": "fde8effa834d12ce127e7f82ac317639505af36b34b3b40a2d108b9e1bfb3b2b",
+  "signature": "HLzL+XlkNkCOo8UReVo7Qh3mMzVn5/imD9J5xbzBejS4b9BjKDTiGfcnhJQPGd47lcmPg3jtBcVOTPNSPVwb3Ws=",
+  "content": {
+    "address": "NULSd6HgcLR5Yjc7yyMiteQZxTpuB6NYRiqWf",
+    "item_type": "storage",
+    "item_hash": "11dfc1e6953dac4bd02d8faa06878f51eea3421fa58d7148e808d425cff2a921",
+    "time": 1582562109.316
+  }
+}
+```
+
+The interesting part here is `content.item_hash`, it can be used to retrieve our stored object, via a direct url (replace the API server by any API server accepting files):
+[https://api2.aleph.im/api/v0/storage/raw/HASH](https://api2.aleph.im/api/v0/storage/raw/11dfc1e6953dac4bd02d8faa06878f51eea3421fa58d7148e808d425cff2a921)
+
+Let's try again with IPFS storage this time:
+```javascript
+var msg = await store.submit(
+    account.address,
+    {'fileobject': myfile,
+     'account': account,
+     'channel': 'TEST',
+     'storage_engine': 'ipfs',
+     'api_server': 'https://api2.aleph.im' // please select an API server accepting files, this one does!
+    })
+msg.content.item_hash
+// => QmQkv43jguT5HLC8TPbYJi2iEmr4MgLgu4nmBoR4zjYb3L
+```
+
+This time we have two urls at our disposal: the [internal one](https://api2.aleph.im/api/v0/storage/raw/QmQkv43jguT5HLC8TPbYJi2iEmr4MgLgu4nmBoR4zjYb3L), and the [ipfs one](https://ipfs.io/ipfs/QmQkv43jguT5HLC8TPbYJi2iEmr4MgLgu4nmBoR4zjYb3L).
+
+
+::: tip
+
+It's worth noting that you can use it to pin an existing IPFS hash that you stored by yourself, by using `storage_engine: 'ipfs', file_hash: 'myhash'` in options.
+
+:::
+
+For full reference here is the `storage.submit` function signature:
+```javascript
+async function submit(
+  address,
+  {
+    file_hash = null, // if you hashed (and sent/provided!) the item yourself already
+    fileobject = null, // or a fileobject (from a form, or built yourself) directly
+    storage_engine = 'storage', // the storage engine
+    // can be 'storage' for aleph.im built-in or 'ipfs' for an ipfs compatible storage
+    chain = null, // the message chain, optional if an account is provided
+    channel = null, // the channel on which to write
+    storage_engine = 'storage', // storage engine to use, 'storage' or 'ipfs'
+    api_server = DEFAULT_SERVER, // target API server
+    account = null // account that should be used to sign
+  } = {}) {
+```
+
+### Retrieving files
+
+You can either use the URIs defined earlier directly, or use the API to get the file content as a Buffer:
+
+```javascript
+await store.retrieve(
+    '11dfc1e6953dac4bd02d8faa06878f51eea3421fa58d7148e808d425cff2a921',
+    {api_server: 'https://api2.aleph.im'}
+)
+// => <Buffer 54 68 69 73 20 69 73 20 6a 75 73 74 20 61 20 74 65 73 74 2e>
+
+var my_buffer = await store.retrieve(
+    'QmQkv43jguT5HLC8TPbYJi2iEmr4MgLgu4nmBoR4zjYb3L',
+    {api_server: 'https://api2.aleph.im'}
+)
+// => <Buffer 54 68 69 73 20 69 73 20 6a 75 73 74 20 61 20 74 65 73 74 2e>
+```
+
+This buffer can easily be converted back to a string:
+```javascript
+my_buffer.toString('utf8')
+// => 'This is just a test.'
+```
 
 ## Encryption
 
+Warning: methods in this module are synchronous.
+
+Encryption in aleph.im uses the [ECIES standard](https://en.wikipedia.org/wiki/Integrated_Encryption_Scheme), using the [ECIES Js library](https://github.com/ecies/js).
+
+It means you encrypt for a specific public key (the receiver), and decrypt with your private key (your account), if you are said receiver.
+
+Let's play with it:
+
+```javascript
+import { encryption } from 'aleph-js'
+
+// Let's encrypt it for our public key:
+encryption.encrypt(account.public_key, "This is just a test.")
+// The line above is equivalent to this one (this one takes an account as first parameter):
+var encrypted = encryption.encrypt_for_self(account, "This is just a test.")
+// => '04b3794b53f0b58636dc547b7a1aef7b74df66fa4e8fe7302ae073149d4217a6788fe1aba0844909ab6fa9faebe87e8b4051fe16be759a650311a2616970fddb16c6bb469b22b5cdf7dd841b7e48c74df182e9d7dbaa2e9638dfb7908e954c5e09f0005f317a81ee161db7ef751387156f8ba685bf'
+
+// Now let's decrypt it:
+encryption.decrypt(account, encrypted)
+// => 'This is just a test.'
+```
+
+Those examples above work well for strings, and encode as hexadecimal.
+All those methods accept a 3rd argument, `options`, with those options:
+- `as_hex`: default true, takes input/output as hexadecimal for the encrypted side
+- `as_string`: default true, works with strings for the clear (unencrypted) side
+
+Those options are useful if you want to serialize yourself, or avoid serialization, and if you are working with files (or binary blobs). 
+
+Typically, if you want to store an encrypted file, you will handle Buffer objects, and won't serialize in any way (both options will by false).
