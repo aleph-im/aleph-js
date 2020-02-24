@@ -6,6 +6,10 @@ The Aleph.im network can be accessed from any API server. To run one yourself, y
 
 Unless specified, all methods of the aleph-js API are promises, meaning they can be called using async/await methods. All our examples are written this way.
 
+You can always have a look at what you are doing on the [aleph.im explorer](https://explorer.aleph.im/).
+
+This explorer is a "wildcard explorer", meaning it tries to index all channels it hears of, and their content (except files). Search for your address, or just go in the messages section, select your channel, and look for your address in the last messages.
+
 ## Architecture
 
 ### Data retrieval

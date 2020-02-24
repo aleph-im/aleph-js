@@ -101,6 +101,8 @@ When you create an AGGREGATE message, you mutate the value of a specific key. Da
 Example of calls:
 
 ``` javascript
+import { aggregates } from 'aleph-js'
+
 // We update the 'mykey' key:
 await aggregates.submit(account.address, 'mykey', {'a': 1, 'b': 2}, {'account': account, 'channel': 'TEST'})
 
@@ -141,8 +143,174 @@ await aggregates.fetch(account.address)
 // >> { mynewkey: { foo: 'bar' }, mykey: { a: 3, b: 2, c: 5, d: 10 } }
 ```
 
+`aggregates.submit` function signature:
+```javascript
+async function submit(
+  address, // sending address
+  key, // the key to mutate
+  content, // content to be applied
+  {
+    chain=null, // the message chain, optional if an account is provided
+    channel=null, // the channel on which to write
+    api_server = DEFAULT_SERVER, // target API server
+    inline = true, // should the message be stored as a separate file or inserted inline
+    storage_engine='storage', // storage engine to use, 'storage' or 'ipfs'
+    account = null // account that should be used to sign, optional
+    // (but needed if you actually want to send the message, without it it's a "dry run"!)
+  } = {}) {
+```
+
+`aggregates.fetch` function signature:
+```javascript
+async function fetch(
+    address,
+    {keys = null, api_server = DEFAULT_SERVER} = {}) {
+```
+
 ## Posts (document-like storage)
+
+Posts are unique documents, posted in a certain channel and for a certain type. 
+
+They can have a `ref`, which is searcheable. This reference is useful for a few things things:
+
+- To reference another document (as a comment for example)
+- To reference something else (an address, a transaction hash, a location ID, whatever), to specify this post is about it
+- To reference another document to amend it. This specific case is interesting, if you post with type `amend` and another post has in the `ref` field, all new occurence of the original post (granted you are authorized to do it) will be shown with new content, like an "amend and replace". (it is useful to edit content).
+
+### Creation
+
+To submit a post, it needs an `address` (most likely your account address), a `type` (keep it simple and lowercase: `blog`, `chat`, `comment`, etc...) a `content`, which is arbitrary (but an object), an an options object with the same options as the others:
+
+```javascript
+import { posts } from 'aleph-js'
+
+await posts.submit(
+    account.address, 'mytype',
+    {'body': 'test'},
+    {'account': account,
+     'channel': 'TEST',
+     api_server: 'https://api2.aleph.im'})
+// { chain: 'NULS2',
+//   channel: 'TEST',
+//   sender: 'NULSd6HgcLR5Yjc7yyMiteQZxTpuB6NYRiqWf',
+//   type: 'POST',
+//   time: 1582555614.466,
+//   item_type: 'inline',
+//   item_content:
+//    '{"type":"mytype","address":"NULSd6HgcLR5Yjc7yyMiteQZxTpuB6NYRiqWf","content":{"body":"test"},"time":1582555614.466}',
+//   item_hash:
+//    'b546f70573a1a91a35a39dbacea0bbfe50847337dcbd995323994535847a6519',
+//   signature:
+//    'HGnCVb6Rnck5l/BfP93zR3/dvgVToK1yRiPTQrCZjKA/eMiUZwMkaSQFb/FMLvENTtZX804KRERGZxoxU1lEip0=' }
+```
+
+For full reference here is the `posts.submit` function signature:
+```javascript
+async function submit(
+  address, post_type, content,
+  
+  {
+    api_server = DEFAULT_SERVER, // target API server
+    ref = null, // ref field of the message, optionnal
+    chain = null, // the message chain, optional if an account is provided
+    channel = null, // the channel on which to write
+    inline = true, // should the message be stored as a separate file or inserted inline
+    // data that could fall under GDPR, set it to false
+    storage_engine = 'storage', // storage engine to use, 'storage' or 'ipfs'
+    account = null // account that should be used to sign, optional
+    // (but needed if you actually want to send the message, without it it's a "dry run"!)
+  } = {}) {
+```
+
+### Query
+
+Now let's ask for all posts sent with 'mytype' `type` (luckily there is only one right now):
+
+```javascript
+let result = await posts.get_posts('mytype')
+// { posts:
+//    [ list ],
+//   pagination_page: 1,
+//   pagination_total: 1,
+//   pagination_per_page: 200,
+//   pagination_item: 'posts' }
+
+result.posts[0].content
+// >> { body: 'test' }
+```
+
+Inside this list, each post is layout like this:
+```javascript
+{ _id: { '$oid': '5e53e1deeecd5271f209dbd7' },
+  chain: 'NULS2',
+  item_hash:
+   'b546f70573a1a91a35a39dbacea0bbfe50847337dcbd995323994535847a6519',
+  sender: 'NULSd6HgcLR5Yjc7yyMiteQZxTpuB6NYRiqWf',
+  type: 'mytype',
+  channel: 'TEST',
+  confirmed: true,
+  content: { body: 'test' },
+  item_content:
+   '{"type":"mytype","address":"NULSd6HgcLR5Yjc7yyMiteQZxTpuB6NYRiqWf","content":{"body":"test"},"time":1582555614.466}',
+  item_type: 'inline',
+  signature:
+   'HGnCVb6Rnck5l/BfP93zR3/dvgVToK1yRiPTQrCZjKA/eMiUZwMkaSQFb/FMLvENTtZX804KRERGZxoxU1lEip0=',
+  size: 115,
+  time: 1582555614.466,
+  confirmations: [ { chain: 'ETH', height: 6027674, hash: [Object] } ],
+  original_item_hash:
+   'b546f70573a1a91a35a39dbacea0bbfe50847337dcbd995323994535847a6519',
+  original_signature:
+   'HGnCVb6Rnck5l/BfP93zR3/dvgVToK1yRiPTQrCZjKA/eMiUZwMkaSQFb/FMLvENTtZX804KRERGZxoxU1lEip0=',
+  original_type: 'mytype',
+  hash:
+   'b546f70573a1a91a35a39dbacea0bbfe50847337dcbd995323994535847a6519',
+  address: 'NULSd6HgcLR5Yjc7yyMiteQZxTpuB6NYRiqWf' }
+```
+
+To simplify, and avoid having a message.content.content, in posts retrieval APIs, the message and first level are merged, leaving only a `content` field that is your content. The `original_` fields are here in case you did an amend.
+
+For full reference here is the `posts.get_posts` function signature:
+```javascript
+async function get_posts(
+  types, // a string, if you want more than one type, separate with commas
+  {
+    api_server = DEFAULT_SERVER,
+    pagination = 200, // Total per page
+    page=1, // requested page
+    refs = null, // a list of references, optional
+    addresses = null, // a list of addresses posting the items, optional
+    tags = null, // a list of tags, optional
+    hashes = null // a list of actual original hashes, optional (useful to request a specific item)
+  } = {}) {
+```
+
+### Amends (editing posts)
+
+To amend the post we created earlier, we submit a new one with type `amend` and the former `item_hash` as `ref`:
+```javascript
+await posts.submit(
+    account.address, 'amend',
+    {'body': 'amended test'},
+    {'ref': 'b546f70573a1a91a35a39dbacea0bbfe50847337dcbd995323994535847a6519',
+     'account': account,
+     'channel': 'TEST',
+     api_server: 'https://api2.aleph.im'})
+
+let result = await posts.get_posts(
+    'mytype',
+    {'hashes': [ // let's filter to find only our post
+        'b546f70573a1a91a35a39dbacea0bbfe50847337dcbd995323994535847a6519'
+    ]})
+result.posts[0].content
+// >> { body: 'amended test' }
+```
+
+
 
 ## Store (File/Blob storage)
 
+
+
 ## Encryption
+
