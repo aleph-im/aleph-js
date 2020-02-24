@@ -93,6 +93,54 @@ You would need to remove them (beside source) to be able to serialize the accoun
 
 ## Aggregates (key-value storage)
 
+The aggregate function is a per-address key-value storage.
+Keys are strings, values are nested objects (dictionnaries or hash-tables).
+
+When you create an AGGREGATE message, you mutate the value of a specific key. Data is added as layers, only changing sub keys that are defined.
+
+Example of calls:
+
+``` javascript
+// We update the 'mykey' key:
+await aggregates.submit(account.address, 'mykey', {'a': 1, 'b': 2}, {'account': account, 'channel': 'TEST'})
+
+// Let's ask for it
+await aggregates.fetch_one(account.address, 'mykey')
+// >> { 'a': 1, 'b': 2 }
+
+// Now let's ask for all keys for our account:
+await aggregates.fetch(account.address)
+// >> { 'mykey': { 'a': 1, 'b': 2 } }
+
+// We update it again with a new subkey
+await aggregates.submit(account.address, 'mykey', {'a': 3, 'c': 5}, {'account': account, 'channel': 'TEST'})
+
+// Now let's ask for all keys for our account again:
+await aggregates.fetch(account.address)
+// >> { mykey: { a: 3, b: 2, c: 5 } }
+// b stayed the same as we didn't touch it...
+
+// Adding a new key:
+await aggregates.submit(account.address, 'mynewkey', {'foo': 'bar'}, {'account': account, 'channel': 'TEST'})
+
+await aggregates.fetch(account.address)
+// >> { mynewkey: { foo: 'bar' }, mykey: { a: 3, b: 2, c: 5 } }
+```
+
+Worth noting, all these commands accept an `options` object, with `api_server` being configurable:
+
+```javascript
+await aggregates.submit(account.address, 'mykey', {'a': 1, 'b': 2}, {'account': account, 'channel': 'TEST', api_server: 'https://api2.aleph.im'})
+
+
+// Let's ask for new data on both API servers (api2 and default -api1-):
+await aggregates.fetch(account.address, {api_server: 'https://api2.aleph.im'})
+// >> { mynewkey: { foo: 'bar' }, mykey: { a: 3, b: 2, c: 5, d: 10 } }
+
+await aggregates.fetch(account.address)
+// >> { mynewkey: { foo: 'bar' }, mykey: { a: 3, b: 2, c: 5, d: 10 } }
+```
+
 ## Posts (document-like storage)
 
 ## Store (File/Blob storage)
