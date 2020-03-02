@@ -9,8 +9,10 @@ yarn add https://github.com/aleph-im/aleph-js.git
 
 ## Docs
 
-We are currently working on documentation.
-In the meantime, you can directly see the relevant sections (work in progress):
+Docs available on [aleph-im.github.io/aleph-js](https://aleph-im.github.io/aleph-js/).
+Please have a look at the [Getting Started guide](https://aleph-im.github.io/aleph-js/guide/getting-started.html).
+
+You can also look at relevant sections in this repo directly (not formatted, etc.):
 
 - [Introduction to aleph.im](docs/guide/README.md)
 - [Getting Started](docs/guide/getting-started.md)
