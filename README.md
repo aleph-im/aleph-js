@@ -4,7 +4,7 @@
 
 To install, add it to your project:
 ```bash
-yarn add https://github.com/aleph-im/aleph-js.git
+yarn add aleph-js
 ```
 
 ## Docs
