@@ -1,13 +1,12 @@
 {
   "name": "aleph-js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Javascript client library for the Aleph network",
   "main": "dist/aleph-js.cjs.js",
   "browser": "dist/aleph-js.umd.js",
   "module": "dist/aleph-js.esm.js",
   "scripts": {
     "pretest": "NODE_ENV=test rollup -c",
-    "postinstall": "NODE_ENV=production rollup -c",
     "test": "",
     "build": "NODE_ENV=production rollup -c",
     "dev": "rollup -c -w",
@@ -43,7 +42,8 @@
     "rollup-plugin-node-resolve": "^4.0.0",
     "secp256k1": "^3.6.2",
     "sha.js": "^2.4.11",
-    "web3": "^1.2.4"
+    "web3": "^1.2.4",
+    "yarn": "^1.22.0"
   },
   "files": [
     "dist"
