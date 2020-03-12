@@ -2,6 +2,7 @@ import axios from 'axios'
 import {DEFAULT_SERVER} from './base'
 import * as nuls2 from './nuls2'
 import * as ethereum from './ethereum'
+import * as neo from './neo'
 const shajs = require('sha.js')
 
 export async function put_content(
@@ -120,6 +121,8 @@ export async function sign_and_broadcast(message, account, api_server) {
       await nuls2.sign(account.private_key, message)
     } else if (account.type === 'ETH') {
       await ethereum.sign(account, message)
+    } else if (account.type === 'NEO') {
+      await neo.sign(account, message)
     } else
       return message // can't sign, so can't broadcast
     await broadcast(message, { 'api_server': api_server })
