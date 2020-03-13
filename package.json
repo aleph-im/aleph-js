@@ -1,6 +1,6 @@
 {
   "name": "aleph-js",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Javascript client library for the Aleph network",
   "main": "dist/aleph-js.cjs.js",
   "browser": "dist/aleph-js.umd.js",
