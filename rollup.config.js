@@ -26,7 +26,11 @@ export default [
 
 	{
 		input: 'src/index.js',
-		external: ['ms'],
+		external: [
+			'ms',
+			'@cityofzion/neon-core',
+			'@cityofzion/neon-js'
+		],
 		output: [
 			{ file: pkg.main, format: 'cjs' },
 			{ file: pkg.module, format: 'es' }
