@@ -29,7 +29,8 @@ export default [
 		external: [
 			'ms',
 			'@cityofzion/neon-core',
-			'@cityofzion/neon-js'
+			'@cityofzion/neon-js',
+			'axios'
 		],
 		output: [
 			{ file: pkg.main, format: 'cjs' },
