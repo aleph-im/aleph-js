@@ -91,6 +91,25 @@ Due to this specificity, three other keys are added to the account object in eth
 
 You would need to remove them (beside source) to be able to serialize the account (for storage for example).
 
+### NEO
+
+NEO addresses currently don't support mnemonics in the API, you need to either provide a `private_key` or a `WIF` (recommended).
+
+Features are similar:
+
+``` javascript
+import { neo } from 'aleph-js'
+
+// to create a new account
+await neo.new_account()
+// to import an account from WIF
+await neo.import_account({wif: '...'})
+// to import an account from private key
+await neo.import_account({private_key: '...'})
+```
+
+Due to the specific elliptic curve used by NEO (SECP256R1 instead of SECP256K1 on NULS and Ethereum), encryption isn't supported yet for NEO addresses, it's a work in progress. Please also take the different curve into account when verifying signatures or content sent by NEO addresses.
+
 ## Aggregates (key-value storage)
 
 The aggregate function is a per-address key-value storage.
