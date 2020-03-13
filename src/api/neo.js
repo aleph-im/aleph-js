@@ -52,15 +52,13 @@ export async function sign(account, message) {
   const salt = uuid().replace(/-/g, '')
 
   const verif_buffer = get_verification_string(message)
-  console.log(verif_buffer)
-
+  
   const parameterHexString = neon.u.str2hexstring(salt + verif_buffer)
 
   const lengthHex = neon.u.num2VarInt(parameterHexString.length / 2)
-  console.log(lengthHex)
   const concatenated_string = lengthHex + parameterHexString
   const message_hex = '010001f0' + concatenated_string + '0000'
-  console.log(message_hex)
+  
   const signature_data = neon.sign.hex(message_hex, account.private_key)
   let signature_object = {
     publicKey: account.public_key, // Public key of account that signed message
