@@ -93,6 +93,8 @@ You would need to remove them (beside source) to be able to serialize the accoun
 
 ### NEO
 
+**New in version 0.1.2**
+
 NEO addresses currently don't support mnemonics in the API, you need to either provide a `private_key` or a `WIF` (recommended).
 
 Features are similar:
