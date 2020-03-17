@@ -93,7 +93,7 @@ You would need to remove them (beside source) to be able to serialize the accoun
 
 ### NEO
 
-**New in version 0.1.2**
+**New in version 0.1.2, encryption supported from 0.2.0**
 
 NEO addresses currently don't support mnemonics in the API, you need to either provide a `private_key` or a `WIF` (recommended).
 
@@ -110,7 +110,7 @@ await neo.import_account({wif: '...'})
 await neo.import_account({private_key: '...'})
 ```
 
-Due to the specific elliptic curve used by NEO (SECP256R1 instead of SECP256K1 on NULS and Ethereum), encryption isn't supported yet for NEO addresses, it's a work in progress. Please also take the different curve into account when verifying signatures or content sent by NEO addresses.
+Due to the specific elliptic curve used by NEO (SECP256R1 instead of SECP256K1 on NULS and Ethereum), please be specific when using encryption, passing the `secp256r1` curve argument). Please also take the different curve into account when verifying signatures or content sent by NEO addresses.
 
 ## Aggregates (key-value storage)
 
@@ -443,7 +443,7 @@ my_buffer.toString('utf8')
 
 ## Encryption
 
-Warning: methods in this module are synchronous.
+Warning: methods in this module are now asynchronous since v0.2.
 
 Encryption in aleph.im uses the [ECIES standard](https://en.wikipedia.org/wiki/Integrated_Encryption_Scheme), using the [ECIES Js library](https://github.com/ecies/js).
 
@@ -454,14 +454,14 @@ Let's play with it:
 ```javascript
 import { encryption } from 'aleph-js'
 
-// Let's encrypt it for our public key:
-encryption.encrypt(account.public_key, "This is just a test.")
+// Let's encrypt it for our public key (which is on NULS, so with secp256k1 curve):
+await encryption.encrypt(account.public_key, "This is just a test.", {'curve': 'secp256k1'})
 // The line above is equivalent to this one (this one takes an account as first parameter):
 var encrypted = encryption.encrypt_for_self(account, "This is just a test.")
 // => '04b3794b53f0b58636dc547b7a1aef7b74df66fa4e8fe7302ae073149d4217a6788fe1aba0844909ab6fa9faebe87e8b4051fe16be759a650311a2616970fddb16c6bb469b22b5cdf7dd841b7e48c74df182e9d7dbaa2e9638dfb7908e954c5e09f0005f317a81ee161db7ef751387156f8ba685bf'
 
 // Now let's decrypt it:
-encryption.decrypt(account, encrypted)
+await encryption.decrypt(account, encrypted)
 // => 'This is just a test.'
 ```
 
@@ -469,7 +469,8 @@ Those examples above work well for strings, and encode as hexadecimal.
 All those methods accept a 3rd argument, `options`, with those options:
 - `as_hex`: default true, takes input/output as hexadecimal for the encrypted side
 - `as_string`: default true, works with strings for the clear (unencrypted) side
+- `curve` (only for the encrypt function, derived from account on the others): sets the curve to encrypt for, as it can't be deducted from the public key. Supported values: `secp256k1` and `secp256r1`.
 
-Those options are useful if you want to serialize yourself, or avoid serialization, and if you are working with files (or binary blobs). 
+The first 2 options are useful if you want to serialize yourself, or avoid serialization, and if you are working with files (or binary blobs). 
 
 Typically, if you want to store an encrypted file, you will handle Buffer objects, and won't serialize in any way (both options will by false).
