@@ -122,7 +122,7 @@ function hmacSha256Verify(key, msg, sig) {
   * @return {Buffer} A 32-byte private key.
   * @function
   */
-exports.generatePrivate = function () {
+export function generatePrivate() {
   var privateKey = randomBytes(32);
   while (!isValidPrivateKey(privateKey)) {
     privateKey = randomBytes(32);
@@ -130,7 +130,7 @@ exports.generatePrivate = function () {
   return privateKey;
 };
 
-var getPublic = exports.getPublic = function(privateKey) {
+export function getPublic(privateKey) {
   // This function has sync API so we throw an error immediately.
   assert(privateKey.length === 32, "Bad private key");
   assert(isValidPrivateKey(privateKey), "Bad private key");
@@ -142,7 +142,7 @@ var getPublic = exports.getPublic = function(privateKey) {
 /**
  * Get compressed version of public key.
  */
-var getPublicCompressed = exports.getPublicCompressed = function(privateKey) { // jshint ignore:line
+export function getPublicCompressed (privateKey) { // jshint ignore:line
   assert(privateKey.length === 32, "Bad private key");
   assert(isValidPrivateKey(privateKey), "Bad private key");
   // See https://github.com/wanderer/secp256k1-node/issues/46
@@ -155,7 +155,7 @@ var getPublicCompressed = exports.getPublicCompressed = function(privateKey) { /
 // <http://caniuse.com/#feat=promises>) and we can use only new browsers
 // because of the WebCryptoAPI (see
 // <http://caniuse.com/#feat=cryptography>).
-exports.sign = function(privateKey, msg) {
+export function sign(privateKey, msg) {
   return new Promise(function(resolve) {
     assert(privateKey.length === 32, "Bad private key");
     assert(isValidPrivateKey(privateKey), "Bad private key");
@@ -165,7 +165,7 @@ exports.sign = function(privateKey, msg) {
   });
 };
 
-exports.verify = function(publicKey, msg, sig) {
+export function verify(publicKey, msg, sig) {
   return new Promise(function(resolve, reject) {
     assert(publicKey.length === 65 || publicKey.length === 33, "Bad public key");
     if (publicKey.length === 65)
@@ -186,7 +186,7 @@ exports.verify = function(publicKey, msg, sig) {
   });
 };
 
-var derive = exports.derive = function(privateKeyA, publicKeyB) {
+export function derive(privateKeyA, publicKeyB) {
   return new Promise(function(resolve) {
     assert(Buffer.isBuffer(privateKeyA), "Bad private key");
     assert(Buffer.isBuffer(publicKeyB), "Bad public key");
@@ -208,7 +208,7 @@ var derive = exports.derive = function(privateKeyA, publicKeyB) {
   });
 };
 
-exports.encrypt = function(publicKeyTo, msg, opts) {
+export function encrypt(publicKeyTo, msg, opts) {
   opts = opts || {};
   // Tmp variables to save context from flat promises;
   var iv, ephemPublicKey, ciphertext, macKey;
@@ -242,7 +242,7 @@ exports.encrypt = function(publicKeyTo, msg, opts) {
   });
 };
 
-exports.decrypt = function(privateKey, opts) {
+export function decrypt(privateKey, opts) {
   // Tmp variable to save context from flat promises;
   var encryptionKey;
   return derive(privateKey, opts.ephemPublicKey).then(function(Px) {
