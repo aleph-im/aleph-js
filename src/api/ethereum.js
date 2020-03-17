@@ -1,4 +1,5 @@
 import * as bip39 from 'bip39'
+
 const ethers = require('ethers')
 
 function get_verification_buffer(message) {
@@ -16,9 +17,9 @@ export async function w3_sign(w3, address, message) {
 export async function sign(account, message) {
   let buffer = get_verification_buffer(message)
   let signer = account.signer
-  if (!signer) {
+  if (!(signer&&signer.signMessage)) {
     if (account.private_key) {
-      signer = ethers.Wallet(account.private_key)
+      signer = new ethers.Wallet(account.private_key)
     }
   }
   if (signer) {
@@ -36,10 +37,12 @@ export async function new_account({path = "m/44'/60'/0'/0/0"} = {}) {
   })
 }
 
+
 async function _from_wallet(wallet) {
   if (wallet) {
     let account = {
       'private_key': wallet.privateKey,
+      'public_key': wallet.signingKey.keyPair.compressedPublicKey,
       'mnemonics': wallet.mnemonic,
       'address': wallet.address,
       'type': 'ETH',
