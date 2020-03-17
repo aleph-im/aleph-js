@@ -64,7 +64,7 @@ export async function import_account({
   if (mnemonics) {
     wallet = ethers.Wallet.fromMnemonic(mnemonics, path)
   } else if (private_key !== null) {
-    wallet = ethers.Wallet(private_key)
+    wallet = new ethers.Wallet(private_key)
   }
   return await _from_wallet(wallet)
 }
