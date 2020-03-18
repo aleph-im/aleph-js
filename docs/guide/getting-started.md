@@ -95,8 +95,6 @@ You would need to remove them (beside source) to be able to serialize the accoun
 
 **New in version 0.1.2, encryption supported from 0.2.0**
 
-NEO addresses currently don't support mnemonics in the API, you need to either provide a `private_key` or a `WIF` (recommended).
-
 Features are similar:
 
 ``` javascript
@@ -104,6 +102,8 @@ import { neo } from 'aleph-js'
 
 // to create a new account
 await neo.new_account()
+// to import an account from mnemonics
+await neo.import_account({mnemonics: '...'})
 // to import an account from WIF
 await neo.import_account({wif: '...'})
 // to import an account from private key
