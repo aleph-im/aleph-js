@@ -445,7 +445,7 @@ my_buffer.toString('utf8')
 
 Warning: methods in this module are now asynchronous since v0.2.
 
-Encryption in aleph.im uses the [ECIES standard](https://en.wikipedia.org/wiki/Integrated_Encryption_Scheme), using the [ECIES Js library](https://github.com/ecies/js).
+Encryption in aleph.im uses the [ECIES standard](https://en.wikipedia.org/wiki/Integrated_Encryption_Scheme), using the [ECIES Js library](https://github.com/ecies/js) on SECP256K1 and a fork of [ECCrypto](https://github.com/bitchan/eccrypto) for others.
 
 It means you encrypt for a specific public key (the receiver), and decrypt with your private key (your account), if you are said receiver.
 
@@ -457,7 +457,7 @@ import { encryption } from 'aleph-js'
 // Let's encrypt it for our public key (which is on NULS, so with secp256k1 curve):
 await encryption.encrypt(account.public_key, "This is just a test.", {'curve': 'secp256k1'})
 // The line above is equivalent to this one (this one takes an account as first parameter):
-var encrypted = encryption.encrypt_for_self(account, "This is just a test.")
+var encrypted = await encryption.encrypt_for_self(account, "This is just a test.")
 // => '04b3794b53f0b58636dc547b7a1aef7b74df66fa4e8fe7302ae073149d4217a6788fe1aba0844909ab6fa9faebe87e8b4051fe16be759a650311a2616970fddb16c6bb469b22b5cdf7dd841b7e48c74df182e9d7dbaa2e9638dfb7908e954c5e09f0005f317a81ee161db7ef751387156f8ba685bf'
 
 // Now let's decrypt it:
