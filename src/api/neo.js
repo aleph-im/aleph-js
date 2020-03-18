@@ -1,6 +1,8 @@
 import core from '@cityofzion/neon-core'
 import neon from '@cityofzion/neon-js'
 import { v4 as uuid } from 'uuid'
+import * as bip39 from 'bip39'
+import * as bip32 from 'bip32'
 
 function get_verification_string(message) {
   // Returns a serialized string to verify the message integrity
@@ -8,16 +10,18 @@ function get_verification_string(message) {
 }
 
 export async function new_account() {
-  let pkey = core.wallet.generatePrivateKey()
-  let wif = core.wallet.getWIFFromPrivateKey(pkey)
+  let mnemonics =  bip39.generateMnemonic()
+  // let pkey = core.wallet.generatePrivateKey()
+  // let wif = core.wallet.getWIFFromPrivateKey(pkey)
   return import_account({
-    'wif': wif
+    'mnemonics': mnemonics
   })
 }
 
-async function _from_wallet(walletobj) {
+async function _from_wallet(walletobj, mnemonics, name) {
   if (walletobj) {
     let account = {
+      'mnemonics': mnemonics,
       'public_key': walletobj.publicKey,
       'private_key': walletobj.privateKey,
       'wif': walletobj.WIF,
@@ -29,6 +33,7 @@ async function _from_wallet(walletobj) {
       account['name'] = name
     else
       account['name'] = account['address']
+    console.log(account)
 
     return account
   }
@@ -37,7 +42,15 @@ async function _from_wallet(walletobj) {
 
 export async function import_account({
   private_key = null, wif = null,
-  name = null } = {}) {
+  name = null, mnemonics = null } = {}) {
+
+  if (mnemonics) {
+    console.log(mnemonics)
+    let v = await bip39.mnemonicToSeed(mnemonics)
+    let b = bip32.fromSeed(v)
+    private_key = b.privateKey.toString('hex')
+    wif = core.wallet.getWIFFromPrivateKey(private_key)
+  }
 
   let walletobj = null
   if (wif) {
@@ -45,7 +58,7 @@ export async function import_account({
   } else if (private_key !== null) {
     walletobj = new core.wallet.Account(private_key)
   }
-  return await _from_wallet(walletobj)
+  return await _from_wallet(walletobj, mnemonics, name)
 }
 
 export async function sign(account, message) {
