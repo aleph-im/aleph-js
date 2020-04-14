@@ -1,7 +1,7 @@
 import { encrypt as secp256k1_encrypt, decrypt as secp256k1_decrypt, utils } from 'eciesjs'
 import { encrypt as secp256r1_encrypt, decrypt as secp256r1_decrypt } from './ecies/secp256r1.js'
 
-function _get_curve_from_acccount(account) {
+function _get_curve_from_account(account) {
   let curve = "secp256k1"
   if (account['type'] == 'NEO')
       curve = "secp256r1"
@@ -27,7 +27,7 @@ export async function decrypt(account, content, { as_hex = true, as_string = tru
   else
     content = Buffer.from(content)
   
-  const curve = _get_curve_from_acccount(account)
+  const curve = _get_curve_from_account(account)
 
   let result = null
   if (curve == 'secp256k1') {
@@ -44,7 +44,7 @@ export async function encrypt_for_self(
   account, content,
   { as_hex = true,
     as_string = true } = {}) {
-  const curve = _get_curve_from_acccount(account)
+  const curve = _get_curve_from_account(account)
   return await encrypt(
     account['public_key'], content,
     {'as_hex': as_hex, 'as_string': as_string, 'curve': curve})
