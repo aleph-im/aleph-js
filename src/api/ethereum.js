@@ -38,7 +38,7 @@ export async function new_account({path = "m/44'/60'/0'/0/0"} = {}) {
 }
 
 
-async function _from_wallet(wallet) {
+async function _from_wallet(wallet, name) {
   if (wallet) {
     let account = {
       'private_key': wallet.privateKey,
@@ -69,7 +69,7 @@ export async function import_account({
   } else if (private_key !== null) {
     wallet = new ethers.Wallet(private_key)
   }
-  return await _from_wallet(wallet)
+  return await _from_wallet(wallet, name)
 }
 
 export async function from_provider(provider) {
