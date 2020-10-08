@@ -29,6 +29,7 @@
   "dependencies": {
     "@cityofzion/neon-core": "^4.7.2",
     "@cityofzion/neon-js": "^4.7.2",
+    "@cosmostation/cosmosjs": "^0.6.10",
     "axios": "^0.18.0",
     "bip32": "^2.0.5",
     "bip39": "^3.0.2",
