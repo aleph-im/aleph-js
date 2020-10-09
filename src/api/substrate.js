@@ -11,7 +11,6 @@ function get_verification_buffer(message) {
 export async function sign(account, message) {
   let buffer = get_verification_buffer(message)
   let signer = account.signer
-  console.log(signer)
   if (!(signer&&signer.sign)) {
     let keyring = new Keyring({ type: 'sr25519' })
     if (account.mnemonics) {
@@ -22,7 +21,6 @@ export async function sign(account, message) {
   }
   console.log(signer)
   if (signer) {
-    console.log(signer.sign(buffer))
     let signed = "0x" + Buffer.from(signer.sign(buffer)).toString('hex')
     let signate_object = JSON.stringify({
       'curve': 'sr25519',
