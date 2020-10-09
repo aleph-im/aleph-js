@@ -19,7 +19,7 @@ export async function sign(account, message) {
       signer = keyring.createFromUri(account.private_key, { name: 'sr25519' })
     }
   }
-  console.log(signer)
+
   if (signer) {
     let signed = "0x" + Buffer.from(signer.sign(buffer)).toString('hex')
     let signate_object = JSON.stringify({
@@ -45,8 +45,7 @@ export async function import_account({
 
   await cryptoWaitReady()
 
-  let keyring = new Keyring({ type: 'sr25519' })
-  keyring.setSS58Format(format)
+  let keyring = new Keyring({ type: 'sr25519', ss58Format: format })
   
   let pair = null
 
