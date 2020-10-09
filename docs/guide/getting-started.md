@@ -93,7 +93,7 @@ You would need to remove them (beside source) to be able to serialize the accoun
 
 ### NEO
 
-**New in version 0.1.2, encryption supported from 0.2.0**
+** Warning: deprecated from 0.3.0! **
 
 Features are similar:
 
@@ -111,6 +111,50 @@ await neo.import_account({private_key: '...'})
 ```
 
 Due to the specific elliptic curve used by NEO (SECP256R1 instead of SECP256K1 on NULS and Ethereum), please be specific when using encryption, passing the `secp256r1` curve argument). Please also take the different curve into account when verifying signatures or content sent by NEO addresses.
+
+
+### Polkadot / Substrate
+
+** New in 0.3.0 **
+
+Features are similar:
+
+``` javascript
+import { neo } from 'aleph-js'
+
+// to create a new account
+await neo.new_account()
+// to import an account from mnemonics
+await neo.import_account({mnemonics: '...'})
+// to import an account from private key
+await neo.import_account({private_key: '...'})
+// to import an account from mnemonics with a Polkadot mainnet format (0)
+await neo.import_account({mnemonics: '...', format: 0})
+```
+
+We only support sr25519 accounts for now on aleph.im. So this argument isn't passed.
+The format argument decides which ss58 account format is targeted, 42 being generic, 0 is polkadot mainnet, 2 is kusama. This will allow to derive a correct address from the key.
+
+
+### Cosmos / Cosmos SDK
+
+** New in 0.3.0 **
+
+Features are similar:
+
+``` javascript
+import { neo } from 'aleph-js'
+
+// to create a new account
+await neo.new_account()
+// to import an account from mnemonics
+await neo.import_account({mnemonics: '...'})
+// to import an account from mnemonics on a specific chain (iov here for example)
+await neo.import_account({mnemonics: '...', prefix='iov'})
+```
+
+Due to signing and address derivation methods, on cosmos we only support the mnemonics account creation.
+
 
 ## Aggregates (key-value storage)
 
