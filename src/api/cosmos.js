@@ -38,6 +38,8 @@ export async function sign(account, message) {
     const cosmos = cosmosjs.network("...", CHAIN_ID)
     let signed = cosmos.sign(cosmos.newStdMsg(signable), Buffer.from(account.private_key, 'hex'))
     message['signature'] = JSON.stringify(signed['tx']['signatures'][0])
+  } else if (account.source == "function") {
+    message['signature'] = account.signer(account, message, signable)
   }
   return message
 }
@@ -74,6 +76,19 @@ export async function import_account({
     'path': path,
     'type': 'CSDK',
     'source': 'integrated'
+  }
+  return account
+}
+
+export async function from_external_signer({
+  address = null, name = null, signer = null, public_key = null} = {}) {
+  let account = {
+    'public_key': public_key,
+    'address': address,
+    'type': 'CSDK',
+    'source': 'function',
+    'signer': signer,
+    'name': name
   }
   return account
 }
