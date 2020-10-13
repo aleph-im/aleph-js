@@ -93,7 +93,7 @@ You would need to remove them (beside source) to be able to serialize the accoun
 
 ### NEO
 
-** Warning: deprecated from 0.3.0, to be removed in 0.3.1! **
+**Warning: deprecated from 0.3.0, to be removed in 0.3.1!**
 
 Features are similar:
 
@@ -115,7 +115,7 @@ Due to the specific elliptic curve used by NEO (SECP256R1 instead of SECP256K1 o
 
 ### Polkadot / Substrate
 
-** New in 0.3.0 **
+**New in 0.3.0**
 
 Features are similar:
 
@@ -138,7 +138,7 @@ The format argument decides which ss58 account format is targeted, 42 being gene
 
 ### Cosmos / Cosmos SDK
 
-** New in 0.3.0 **
+**New in 0.3.0**
 
 Features are similar:
 
