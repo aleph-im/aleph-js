@@ -93,7 +93,7 @@ You would need to remove them (beside source) to be able to serialize the accoun
 
 ### NEO
 
-** Warning: deprecated from 0.3.0! **
+** Warning: deprecated from 0.3.0, to be removed in 0.3.1! **
 
 Features are similar:
 
