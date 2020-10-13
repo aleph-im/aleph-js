@@ -120,16 +120,16 @@ Due to the specific elliptic curve used by NEO (SECP256R1 instead of SECP256K1 o
 Features are similar:
 
 ``` javascript
-import { neo } from 'aleph-js'
+import { substrate } from 'aleph-js'
 
 // to create a new account
-await neo.new_account()
+await substrate.new_account()
 // to import an account from mnemonics
-await neo.import_account({mnemonics: '...'})
+await substrate.import_account({mnemonics: '...'})
 // to import an account from private key
-await neo.import_account({private_key: '...'})
+await substrate.import_account({private_key: '...'})
 // to import an account from mnemonics with a Polkadot mainnet format (0)
-await neo.import_account({mnemonics: '...', format: 0})
+await substrate.import_account({mnemonics: '...', format: 0})
 ```
 
 We only support sr25519 accounts for now on aleph.im. So this argument isn't passed.
@@ -143,14 +143,14 @@ The format argument decides which ss58 account format is targeted, 42 being gene
 Features are similar:
 
 ``` javascript
-import { neo } from 'aleph-js'
+import { cosmos } from 'aleph-js'
 
 // to create a new account
-await neo.new_account()
+await cosmos.new_account()
 // to import an account from mnemonics
-await neo.import_account({mnemonics: '...'})
+await cosmos.import_account({mnemonics: '...'})
 // to import an account from mnemonics on a specific chain (iov here for example)
-await neo.import_account({mnemonics: '...', prefix='iov'})
+await cosmos.import_account({mnemonics: '...', prefix='iov'})
 ```
 
 Due to signing and address derivation methods, on cosmos we only support the mnemonics account creation.
