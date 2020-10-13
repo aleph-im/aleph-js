@@ -39,7 +39,7 @@ export async function sign(account, message) {
     let signed = cosmos.sign(cosmos.newStdMsg(signable), Buffer.from(account.private_key, 'hex'))
     message['signature'] = JSON.stringify(signed['tx']['signatures'][0])
   } else if (account.source == "function") {
-    message['signature'] = account.signer(account, message, signable)
+    message['signature'] = await account.signer(account, message, signable)
   }
   return message
 }
