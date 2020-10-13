@@ -150,7 +150,7 @@ await cosmos.new_account()
 // to import an account from mnemonics
 await cosmos.import_account({mnemonics: '...'})
 // to import an account from mnemonics on a specific chain (iov here for example)
-await cosmos.import_account({mnemonics: '...', prefix='iov'})
+await cosmos.import_account({mnemonics: '...', prefix='star'})
 ```
 
 Due to signing and address derivation methods, on cosmos we only support the mnemonics account creation.
