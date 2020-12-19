@@ -22,11 +22,19 @@ export async function sign(account, message) {
       signer = new ethers.Wallet(account.private_key)
     }
   }
-  if (signer) {
-    let signed = await signer.signMessage(buffer.toString())
-    message.signature = signed
-    return message
+  let signed = null
+  if (account.provider && account.provider.provider && account.provider.provider.isWalletConnect) {
+    signed = await account.provider.provider.request({ 
+      method: 'personal_sign',
+      params: [
+        buffer,
+        account.address
+      ]});
+  } else if (signer) {
+    signed = await signer.signMessage(buffer.toString())
   }
+  message.signature = signed
+  return message
 }
 
 export async function new_account({path = "m/44'/60'/0'/0/0"} = {}) {
