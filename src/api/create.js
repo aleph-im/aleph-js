@@ -5,6 +5,7 @@ import * as ethereum from './ethereum'
 import * as neo from './neo'
 import * as cosmos from './cosmos'
 import * as substrate from './substrate'
+import * as solana from './solana'
 const shajs = require('sha.js')
 
 export async function put_content(
@@ -129,6 +130,8 @@ export async function sign_and_broadcast(message, account, api_server) {
       await substrate.sign(account, message)
     } else if (account.type === 'CSDK') {
       await cosmos.sign(account, message)
+    } else if (account.type === 'SOL') {
+      await solana.sign(account, message)
     } else
       return message // can't sign, so can't broadcast
     await broadcast(message, { 'api_server': api_server })
