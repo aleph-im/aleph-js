@@ -1,10 +1,13 @@
 import { encrypt as secp256k1_encrypt, decrypt as secp256k1_decrypt, utils } from 'eciesjs'
 import { encrypt as secp256r1_encrypt, decrypt as secp256r1_decrypt } from './ecies/secp256r1.js'
+import base58 from 'bs58'
 
 function _get_curve_from_account(account) {
   let curve = "secp256k1"
   if (account['type'] == 'NEO')
-      curve = "secp256r1"
+    curve = "secp256r1"
+  if (account['type'] == 'SOL')
+    curve = "ed25519"
   return curve 
 }
 
@@ -18,6 +21,17 @@ function _decapsulate(content) {
     iv: content.slice(65, 65+16),
     mac: content.slice(65+16, 65+48),
     ciphertext: content.slice(65+48)
+  }
+}
+
+function _encapsulate_box(opts) {
+  return Buffer.concat([opts.nonce, opts.ciphertext])
+}
+
+function _decapsulate_box(content) {
+  return {
+    nonce: content.slice(0, nacl.secretbox.nonceLength),
+    ciphertext: content.slice(nacl.secretbox.nonceLength)
   }
 }
 
@@ -35,6 +49,13 @@ export async function decrypt(account, content, { as_hex = true, as_string = tru
   } else if (curve == 'secp256r1') {
     let opts = _decapsulate(content)
     result = await secp256r1_decrypt(utils.decodeHex(account['private_key']), opts)
+  } else if (curve == 'ed25519') {
+    let opts = _decapsulate_box(content)
+    result = nacl.secretbox.open(
+      opts.ciphertext,
+      opts.nonce,
+      base58.decode(account['private_key'])
+    )
   }
   if (as_string)
     result = result.toString()
@@ -65,6 +86,13 @@ export async function encrypt(
   else if (curve == 'secp256r1') {
     result = await secp256r1_encrypt(utils.decodeHex(target_publickey), encrypted_content)
     result = _encapsulate(result)
+  } else if (curve == 'ed25519') {
+    let nonce = nacl.randomBytes(nacl.secretbox.nonceLength)
+    let content = nacl.secretbox(encrypted_content, nonce, base58.decode(key))
+    result = _encapsulate_box({
+      nonce: nonce,
+      ciphertext: content
+    })
   }
 
   if (as_hex)
