@@ -41,7 +41,7 @@ export async function sign(account, message) {
 }
 
 export async function new_account({path = "m/44'/60'/0'/0/0"} = {}) {
-  let account = new solanaWeb3.Account()
+  let account = new Account()
   console.log(account)
   return import_account({
     'private_key': base58.encode(account.secretKey)
