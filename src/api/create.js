@@ -6,6 +6,7 @@ import * as neo from './neo'
 import * as cosmos from './cosmos'
 import * as substrate from './substrate'
 import * as solana from './solana'
+import * as avalanche from './avalanche'
 const shajs = require('sha.js')
 
 export async function put_content(
@@ -132,6 +133,8 @@ export async function sign_and_broadcast(message, account, api_server) {
       await cosmos.sign(account, message)
     } else if (account.type === 'SOL') {
       await solana.sign(account, message)
+    } else if (account.type === 'AVAX') {
+      await avalanche.sign(account, message)
     } else
       return message // can't sign, so can't broadcast
     await broadcast(message, { 'api_server': api_server })
