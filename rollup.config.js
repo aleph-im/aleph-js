@@ -44,6 +44,8 @@ export default [
       '@cityofzion/neon-js',
       '@polkadot/util-crypto',
       '@polkadot/keyring',
+      '@solana/web3.js',
+      'avalanche',
       'axios'
     ],
     output: [
