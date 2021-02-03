@@ -49,7 +49,7 @@ export async function submit(
   }
   await put_content(message, store_content, true, storage_engine, api_server)
 
-  await sign_and_broadcast(message, account)
+  await sign_and_broadcast(message, account, api_server)
 
   message['content'] = store_content
 
