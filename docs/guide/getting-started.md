@@ -91,27 +91,6 @@ Due to this specificity, three other keys are added to the account object in eth
 
 You would need to remove them (beside source) to be able to serialize the account (for storage for example).
 
-### NEO
-
-**Warning: deprecated from 0.3.0, to be removed in 0.3.1!**
-
-Features are similar:
-
-``` javascript
-import { neo } from 'aleph-js'
-
-// to create a new account
-await neo.new_account()
-// to import an account from mnemonics
-await neo.import_account({mnemonics: '...'})
-// to import an account from WIF
-await neo.import_account({wif: '...'})
-// to import an account from private key
-await neo.import_account({private_key: '...'})
-```
-
-Due to the specific elliptic curve used by NEO (SECP256R1 instead of SECP256K1 on NULS and Ethereum), please be specific when using encryption, passing the `secp256r1` curve argument). Please also take the different curve into account when verifying signatures or content sent by NEO addresses.
-
 
 ### Polkadot / Substrate
 
@@ -154,6 +133,40 @@ await cosmos.import_account({mnemonics: '...', prefix='star'})
 ```
 
 Due to signing and address derivation methods, on cosmos we only support the mnemonics account creation.
+
+
+### Solana
+
+**New in 0.4.0**
+
+Features are similar:
+
+``` javascript
+import { solana } from 'aleph-js'
+
+// to create a new account
+await solana.new_account()
+// to import an account from private key
+await solana.import_account({private_key: '...'})
+// to import an account from a wallet object (sollet)
+await solana.from_provider(wallet)
+```
+
+
+### Avalanche
+
+**New in 0.4.0**
+
+Features are similar:
+
+``` javascript
+import { avalanche } from 'aleph-js'
+
+// to create a new account
+await avalanche.new_account()
+// to import an account from private key
+await avalanche.import_account({private_key: '...'})
+```
 
 
 ## Aggregates (key-value storage)
