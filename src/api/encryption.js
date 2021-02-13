@@ -4,8 +4,6 @@ import base58 from 'bs58'
 
 function _get_curve_from_account(account) {
   let curve = "secp256k1"
-  if (account['type'] == 'NEO')
-    curve = "secp256r1"
   if (account['type'] == 'SOL')
     curve = "ed25519"
   return curve 

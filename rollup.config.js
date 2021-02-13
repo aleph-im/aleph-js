@@ -40,8 +40,6 @@ export default [
     external: [
       'ms',
       '@cosmostation/cosmosjs',
-      '@cityofzion/neon-core',
-      '@cityofzion/neon-js',
       '@polkadot/util-crypto',
       '@polkadot/keyring',
       '@solana/web3.js',

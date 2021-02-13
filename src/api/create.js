@@ -2,7 +2,6 @@ import axios from 'axios'
 import {DEFAULT_SERVER} from './base'
 import * as nuls2 from './nuls2'
 import * as ethereum from './ethereum'
-import * as neo from './neo'
 import * as cosmos from './cosmos'
 import * as substrate from './substrate'
 import * as solana from './solana'
@@ -125,8 +124,6 @@ export async function sign_and_broadcast(message, account, api_server) {
       await nuls2.sign(account.private_key, message)
     } else if (account.type === 'ETH') {
       await ethereum.sign(account, message)
-    } else if (account.type === 'NEO') {
-      await neo.sign(account, message)
     } else if (account.type === 'DOT') {
       await substrate.sign(account, message)
     } else if (account.type === 'CSDK') {
