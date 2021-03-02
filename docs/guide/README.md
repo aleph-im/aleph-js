@@ -14,7 +14,7 @@ This explorer is a "wildcard explorer", meaning it tries to index all channels i
 
 ### Data retrieval
 
-Data retrieval is simple, using ReST APIs on any API server. There is a few helpers available in this library (depending on the requested data type).
+Data retrieval is simple, using REST APIs on any API server. There is a few helpers available in this library (depending on the requested data type).
 
 ### Data structures
 
