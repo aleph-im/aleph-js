@@ -2,6 +2,8 @@
   "name": "aleph-js",
   "version": "0.4.3",
   "description": "Javascript client library for the Aleph network",
+  "homepage": "https://aleph-im.github.io/aleph-js",
+  "repository": "aleph-im/aleph-js.git",
   "main": "dist/aleph-js.cjs.js",
   "browser": "dist/aleph-js.umd.js",
   "module": "dist/aleph-js.esm.js",
