@@ -7,9 +7,11 @@ import * as avalanche from './api/avalanche.js';
 import * as ethereum from './api/ethereum.js';
 import * as substrate from './api/substrate.js';
 import * as posts from './api/posts.js';
+import * as messages from './api/messages.js';
 import * as store from './api/store.js';
 import * as encryption from './api/encryption.js';
-export {aggregates, nuls, nuls2, cosmos, solana, avalanche, ethereum, substrate, posts, store, encryption};
+export {aggregates, nuls, nuls2, cosmos, solana, avalanche, ethereum,
+  substrate, posts, store, messages, encryption};
 
 export {
   ipfs_push, storage_push,
