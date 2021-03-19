@@ -9,7 +9,7 @@ export async function submit(
     file_hash = null, fileobject = null,
     storage_engine = 'storage',
     chain = null, channel = null, api_server = DEFAULT_SERVER,
-    account = null } = {}) {
+    account = null, extra_fields = {} } = {}) {
 
   if ((file_hash === null) && (fileobject === null)) {
     throw "You must either provide a hash and an engine or a fileobject" 
@@ -38,7 +38,8 @@ export async function submit(
     'address': address,
     'item_type': storage_engine,
     'item_hash': file_hash,
-    'time': Date.now() / 1000
+    'time': Date.now() / 1000,
+    ...extra_fields
   }
   let message = {
     'chain': chain,
