@@ -49,7 +49,7 @@ import { nuls2 } from 'aleph-js'
 // From mnemonics:
 account = await nuls2.import_account({mnemonics: 'cool install source weather mass material hope inflict nerve evil swing swamp'})
 // From private key:
-account = nuls2.import_account({private_key: 'cc0681517ecbf8d2800f6fe237fb0af9bef8c95eaa04bfaf3a733cf144a9640c'})
+account = await nuls2.import_account({private_key: 'cc0681517ecbf8d2800f6fe237fb0af9bef8c95eaa04bfaf3a733cf144a9640c'})
 ```
 
 ### Ethereum
