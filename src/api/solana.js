@@ -1,4 +1,4 @@
-import { Account } from '@solana/web3.js'
+import { Keypair } from '@solana/web3.js'
 import nacl from 'tweetnacl';
 import * as bip39 from 'bip39'
 import base58 from 'bs58'
@@ -41,7 +41,7 @@ export async function sign(account, message) {
 }
 
 export async function new_account({path = "m/44'/60'/0'/0/0"} = {}) {
-  let account = new Account()
+  let account = new Keypair()
   console.log(account)
   return import_account({
     'private_key': base58.encode(account.secretKey)
@@ -74,7 +74,7 @@ export async function import_account({
   
   let wallet = null
   if (private_key !== null) {
-    wallet = new Account(base58.decode(private_key))
+    wallet = Keypair.fromSecretKey(base58.decode(private_key))
   }
   return await _from_wallet(wallet, name)
 }
