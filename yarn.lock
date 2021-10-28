@@ -2043,10 +2043,10 @@ available-typed-arrays@^1.0.2:
   dependencies:
     array-filter "^1.0.0"
 
-avalanche@^3.1.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/avalanche/-/avalanche-3.2.0.tgz#d971b6628f595d9c5ec007f96180cb156536b86c"
-  integrity sha512-bfrkmwT1EXeo6/HogAlCHYc1huoNeX3p3hElNjm+CfTSLsCGYOM0O33mK9cSuo/zq9/kOVAXPSEj6jSKMtxxfQ==
+avalanche@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/avalanche/-/avalanche-3.1.0.tgz#e13b5b5a069192be8d6ff8fe576f05afb6bebea9"
+  integrity sha512-WgGWBOfqCWAaBuTeiMbpmNk2Gn6EoI2oWreRSJQT5DfUcwh+YvVxpXr/IXP56l9mp2LH99G3myoz4yt0R5VxvA==
   dependencies:
     axios "0.19.2"
     bech32 "1.1.4"
@@ -2916,9 +2916,9 @@ color-name@^1.0.0, color-name@~1.1.4:
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
 
 color-string@^1.5.4:
-  version "1.5.4"
-  resolved "https://registry.yarnpkg.com/color-string/-/color-string-1.5.4.tgz#dd51cd25cfee953d138fe4002372cc3d0e504cb6"
-  integrity sha512-57yF5yt8Xa3czSEW1jfQDE79Idk0+AkN/4KWad6tbdxUmAs3MvjxlWSWD4deYytcRfoZ9nhKyFl1kj5tBvidbw==
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/color-string/-/color-string-1.6.0.tgz#c3915f61fe267672cb7e1e064c9d692219f6c312"
+  integrity sha512-c/hGS+kRWJutUBEngKKmk4iH3sD59MBkoxVapS/0wgpCz2u7XsNloxknyvBhzwEs1IbV36D9PwqLPJ2DTu3vMA==
   dependencies:
     color-name "^1.0.0"
     simple-swizzle "^0.2.2"
