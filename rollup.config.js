@@ -44,7 +44,14 @@ export default [
       '@polkadot/keyring',
       '@solana/web3.js',
       'avalanche',
-      'axios'
+      'axios',
+      'bs58',
+      'sha.js',
+      'bip39',
+      'bip32',
+      'elliptic',
+      'eciesjs',
+      'ethers'
     ],
     output: [
       { file: pkg.main, format: 'cjs' },
