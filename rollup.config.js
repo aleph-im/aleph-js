@@ -51,7 +51,8 @@ export default [
       'bip32',
       'elliptic',
       'eciesjs',
-      'ethers'
+      'ethers',
+      'tweetnacl'
     ],
     output: [
       { file: pkg.main, format: 'cjs' },
