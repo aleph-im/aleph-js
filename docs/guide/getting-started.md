@@ -468,7 +468,6 @@ async function submit(
     // can be 'storage' for aleph.im built-in or 'ipfs' for an ipfs compatible storage
     chain = null, // the message chain, optional if an account is provided
     channel = null, // the channel on which to write
-    storage_engine = 'storage', // storage engine to use, 'storage' or 'ipfs'
     api_server = DEFAULT_SERVER, // target API server
     account = null // account that should be used to sign
   } = {}) {
