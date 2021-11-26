@@ -6,7 +6,10 @@ import * as cosmos from './cosmos'
 import * as substrate from './substrate'
 import * as solana from './solana'
 import * as avalanche from './avalanche'
+import FormDataNode from 'form-data'
 const shajs = require('sha.js')
+
+const isBrowser = typeof FormData !== 'undefined'
 
 export async function put_content(
   message, content, inline_requested, storage_engine, api_server) {
@@ -66,8 +69,14 @@ export async function storage_push (
 
 export async function ipfs_push_file (
   fileobject, {api_server = DEFAULT_SERVER} = {}) {
-  let formData = new FormData()
-  formData.append('file', fileobject)
+  let formData = null
+  if (isBrowser) {
+    formData = new FormData()
+    formData.append('file', fileobject)
+  } else {
+    formData = new FormDataNode()
+    formData.append('file', fileobject, 'random.txt') // FileName is required but does not seem to have any effect
+  }
 
   let response = await axios.post( `${api_server}/api/v0/ipfs/add_file`,
     formData,
@@ -87,8 +96,14 @@ export async function ipfs_push_file (
 
 export async function storage_push_file (
   fileobject, {api_server = DEFAULT_SERVER} = {}) {
-  let formData = new FormData()
-  formData.append('file', fileobject)
+  let formData = null
+  if (isBrowser) {
+    formData = new FormData()
+    formData.append('file', fileobject)
+  } else {
+    formData = new FormDataNode()
+    formData.append('file', fileobject, 'random.txt') // FileName is required but does not seem to have any effect
+  }
 
   let response = await axios.post( `${api_server}/api/v0/storage/add_file`,
     formData,
