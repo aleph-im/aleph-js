@@ -4,8 +4,8 @@ import {DEFAULT_SERVER} from './base'
 import {sign_and_broadcast, put_content} from './create'
 const shajs = require('sha.js')
 
-export async function fetch_one(address, key, {api_server = DEFAULT_SERVER} = {}) {
-  let response = await axios.get(`${api_server}/api/v0/aggregates/${address}.json?keys=${key}`)
+export async function fetch_one(address, key, {api_server = DEFAULT_SERVER, limit = 1000} = {}) {
+  let response = await axios.get(`${api_server}/api/v0/aggregates/${address}.json?keys=${key}&limit=${limit}`)
   if ((response.data.data !== undefined) && (response.data.data[key] !== undefined))
   {
     return response.data.data[key]
@@ -13,7 +13,7 @@ export async function fetch_one(address, key, {api_server = DEFAULT_SERVER} = {}
     return null
 }
 
-export async function fetch(address, {keys = null, api_server = DEFAULT_SERVER} = {}) {
+export async function fetch(address, {keys = null, api_server = DEFAULT_SERVER, limit = 1000} = {}) {
 
   if (keys !== null)
     keys = keys.join(',')
@@ -21,7 +21,7 @@ export async function fetch(address, {keys = null, api_server = DEFAULT_SERVER} 
   let response = await axios.get(
     `${api_server}/api/v0/aggregates/${address}.json`,
     {
-      params: {keys: keys}
+      params: {keys: keys, limit: limit}
     })
   if ((response.data.data !== undefined))
   {
