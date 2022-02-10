@@ -7,7 +7,7 @@ const shajs = require('sha.js')
 export async function get_posts(
   types, {
     api_server = DEFAULT_SERVER, pagination = 200, page=1,
-    refs = null, addresses = null, tags = null, hashes = null} = {}) {
+    refs = null, addresses = null, tags = null, hashes = null, channels = null, start_date = null, end_date = null} = {}) {
   let params = {
     'types': types,
     'pagination': pagination,
@@ -25,6 +25,15 @@ export async function get_posts(
 
   if (hashes !== null)
     params.hashes = hashes.join(',')
+
+  if (channels != null)
+    params.channels = channels.join(',')
+
+  if (start_date !== null)
+    params.startDate = start_date
+  
+  if (end_date !== null)
+    params.endDate = end_date
 
   let response = await axios.get(`${api_server}/api/v0/posts.json`, {
     'params': params

@@ -4,7 +4,7 @@ import {DEFAULT_SERVER} from './base'
 export async function get_messages(
     { api_server = DEFAULT_SERVER, pagination = 200, page=1,
       message_type = null, content_types = null,
-      refs = null, addresses = null, tags = null, hashes = null} = {}) {
+      refs = null, addresses = null, tags = null, hashes = null, channels = null, start_date = null, end_date = null} = {}) {
     let params = {
       'pagination': pagination,
       'page': page
@@ -27,6 +27,15 @@ export async function get_messages(
   
     if (hashes !== null)
       params.hashes = hashes.join(',')
+    
+    if (channels != null)
+      params.channels = channels.join(',')
+  
+    if (start_date !== null)
+      params.startDate = start_date
+    
+    if (end_date !== null)
+      params.endDate = end_date
   
     let response = await axios.get(`${api_server}/api/v0/messages.json`, {
       'params': params
