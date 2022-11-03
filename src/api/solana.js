@@ -12,10 +12,34 @@ function get_verification_buffer(message) {
 
 export async function provider_sign(provider, message) {
   let buffer = get_verification_buffer(message)
-  let signed = await provider._sendRequest('signTransaction', {
-    message: base58.encode(buffer),
-  });
-  return JSON.stringify(signed)
+  let signature;
+  if (typeof(provider.signTransaction) === 'function') {
+    signature = await provider.request({
+        method: "signMessage",
+        params: {
+            message: buffer
+        }
+    })
+  }
+  else if (typeof(provider._sendRequest) === 'function') {
+      try {
+        signature = await provider._sendRequest('signTransaction', {
+            message: base58.encode(buffer)
+          })
+          if (!signature) {
+              throw new Error('JSONRPC method not implemented')
+          }
+      } catch (error) {
+          console.log(error)
+      }
+  }
+  else{
+      throw new Error('Provider has no signing method')
+  }
+  return JSON.stringify({
+    signature: signature.signature,
+    publicKey: provider.publicKey.toString()
+  })
 }
 
 export async function pkey_sign(secretKey, address, message) {
