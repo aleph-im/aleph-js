@@ -172,7 +172,7 @@ await avalanche.import_account({private_key: '...'})
 ## Aggregates (key-value storage)
 
 The aggregate function is a per-address key-value storage.
-Keys are strings, values are nested objects (dictionnaries or hash-tables).
+Keys are strings, values are nested objects (dictionaries or hash-tables).
 
 When you create an AGGREGATE message, you mutate the value of a specific key. Data is added as layers, only changing sub keys that are defined.
 
@@ -249,11 +249,11 @@ async function fetch(
 
 Posts are unique documents, posted in a certain channel and for a certain type. 
 
-They can have a `ref`, which is searcheable. This reference is useful for a few things things:
+They can have a `ref`, which is searchable. This reference is useful for a few things things:
 
 - To reference another document (as a comment for example)
 - To reference something else (an address, a transaction hash, a location ID, whatever), to specify this post is about it
-- To reference another document to amend it. This specific case is interesting, if you post with type `amend` and another post has in the `ref` field, all new occurence of the original post (granted you are authorized to do it) will be shown with new content, like an "amend and replace". (it is useful to edit content).
+- To reference another document to amend it. This specific case is interesting, if you post with type `amend` and another post has in the `ref` field, all new occurrence of the original post (granted you are authorized to do it) will be shown with new content, like an "amend and replace". (it is useful to edit content).
 
 ### Creation
 
@@ -288,7 +288,7 @@ async function submit(
   address, post_type, content,
   {
     api_server = DEFAULT_SERVER, // target API server
-    ref = null, // ref field of the message, optionnal
+    ref = null, // ref field of the message, optional
     chain = null, // the message chain, optional if an account is provided
     channel = null, // the channel on which to write
     inline = true, // should the message be stored as a separate file or inserted inline
