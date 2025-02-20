@@ -18,7 +18,7 @@ Data retrieval is simple, using ReST APIs on any API server. There is a few help
 
 ### Data structures
 
-All data transfered over the aleph.im network are aleph messages.
+All data transferred over the aleph.im network are aleph messages.
 
 While it may seem complicated at first, this data model quickly explains itself.
 
