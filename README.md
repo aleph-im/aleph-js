@@ -1,18 +1,12 @@
 # Aleph-JS
 
-## Installing
+## Deprecation Notice
+This project has been **superseded** by [aleph-sdk-ts](https://github.com/aleph-im/aleph-sdk-ts). The new SDK provides enhanced functionality, improved TypeScript support, and better maintainability for JavaScript developers.
 
-To install, add it to your project:
-```bash
-yarn add aleph-js
-```
+## What This Means for You
+If you are currently using **Aleph-JS**, we strongly recommend migrating to **[aleph-sdk-ts](https://github.com/aleph-im/aleph-sdk-ts)** for the latest features and ongoing support.
 
-## Docs
-
-Docs available on [aleph-im.github.io/aleph-js](https://aleph-im.github.io/aleph-js/).
-Please have a look at the [Getting Started guide](https://aleph-im.github.io/aleph-js/guide/getting-started.html).
-
-You can also look at relevant sections in this repo directly (not formatted, etc.):
-
-- [Introduction to aleph.im](docs/guide/README.md)
-- [Getting Started](docs/guide/getting-started.md)
+### Benefits of Using `aleph-sdk-ts`:
+- Fully compatible with JavaScript
+- Includes useful TypeScript types to improve development experience
+- Actively maintained with bug fixes and new features
